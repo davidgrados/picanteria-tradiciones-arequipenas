@@ -183,6 +183,66 @@ const CONFIG = {
   }
 
   /* ============================================================
+     MOMENTOS DE TRADICIÓN (tira deslizable)
+     ============================================================ */
+  const MOMENTOS = [
+    { f: "momento-01.jpg", cap: "Nuestra fachada", alt: "Fachada y letrero de la picantería Tradiciones Arequipeñas" },
+    { f: "momento-02.jpg", cap: "Orquesta en vivo", alt: "Orquesta tocando en vivo en Tradiciones Arequipeñas" },
+    { f: "momento-03.jpg", cap: "Nuestro equipo", alt: "Equipo de atención de Tradiciones Arequipeñas" },
+    { f: "momento-04.jpg", cap: "La mesa compartida", alt: "Clientes compartiendo una comida en Tradiciones Arequipeñas" },
+    { f: "momento-05.jpg", cap: "Trío en vivo", alt: "Trío musical tocando en vivo en la picantería" },
+    { f: "momento-06.jpg", cap: "Voz de la casa", alt: "Cantante en el escenario de Tradiciones Arequipeñas" },
+    { f: "momento-07.jpg", cap: "Música criolla", alt: "Grupo de música criolla en el escenario" },
+    { f: "momento-08.jpg", cap: "Celebraciones en la mesa", alt: "Celebración de clientes alrededor de la mesa" },
+    { f: "momento-09.jpg", cap: "Show en vivo", alt: "Show musical en vivo en la picantería" },
+    { f: "momento-10.jpg", cap: "El tradicional de la casa", alt: "Escultura de la vasija tradicional arequipeña con el nombre del restaurante" },
+    { f: "momento-11.jpg", cap: "Con nuestros visitantes", alt: "Visitantes posando en Tradiciones Arequipeñas" }
+  ];
+
+  const strip = document.getElementById("momentos-strip");
+  const momentosList = [];
+  if (strip) {
+    MOMENTOS.forEach(function (m, i) {
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = "momento";
+      card.dataset.index = i;
+      const img = document.createElement("img");
+      img.src = "images/momentos/" + m.f;
+      img.alt = m.alt;
+      img.loading = "lazy";
+      const cap = document.createElement("span");
+      cap.className = "momento-cap";
+      cap.textContent = m.cap;
+      card.appendChild(img);
+      card.appendChild(cap);
+      strip.appendChild(card);
+      momentosList.push({ src: img.src, alt: m.alt });
+    });
+
+    strip.addEventListener("click", function (e) {
+      const card = e.target.closest(".momento");
+      if (card) openLightbox(momentosList, parseInt(card.dataset.index, 10));
+    });
+
+    const prevBtn = document.getElementById("momentos-prev");
+    const nextBtn = document.getElementById("momentos-next");
+    function scrollStrip(dir) {
+      strip.scrollBy({ left: dir * Math.max(300, strip.clientWidth * 0.8), behavior: "smooth" });
+    }
+    function updateArrows() {
+      if (!prevBtn || !nextBtn) return;
+      const max = strip.scrollWidth - strip.clientWidth - 4;
+      prevBtn.style.visibility = strip.scrollLeft <= 4 ? "hidden" : "visible";
+      nextBtn.style.visibility = strip.scrollLeft >= max ? "hidden" : "visible";
+    }
+    prevBtn.addEventListener("click", function () { scrollStrip(-1); });
+    nextBtn.addEventListener("click", function () { scrollStrip(1); });
+    strip.addEventListener("scroll", updateArrows, { passive: true });
+    window.addEventListener("resize", updateArrows);
+    updateArrows();
+  }
+  /* ============================================================
      CARTA: flipbook con giro de hoja tipo periódico
      ============================================================ */
   function initCartaBook() {

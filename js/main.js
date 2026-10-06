@@ -264,13 +264,23 @@ const CONFIG = {
       return { src: img.src, alt: img.alt };
     });
 
-    /* El marco adopta la proporción de la hoja activa (--ar = ancho/alto) */
-    function applyRatio(index) {
+        /* Dimensiona el marco en píxeles según la proporción de la hoja activa */
+    function ratioOf(index) {
       const img = sheets[index].querySelector("img");
-      let ar = 1.414;
-      if (img && img.naturalWidth && img.naturalHeight) ar = img.naturalWidth / img.naturalHeight;
-      else if (sheets[index].dataset.ratio) ar = parseFloat(sheets[index].dataset.ratio);
-      frame.style.setProperty("--ar", ar.toFixed(4));
+      if (img && img.naturalWidth && img.naturalHeight) return img.naturalWidth / img.naturalHeight;
+      if (sheets[index].dataset.ratio) return parseFloat(sheets[index].dataset.ratio);
+      return 1.414;
+    }
+    function sizeFrame() {
+      const pad = 32;
+      const availW = Math.max(260, stage.clientWidth - pad);
+      const availH = Math.max(280, window.innerHeight * 0.72);
+      const ar = ratioOf(current);
+      let w = availW;
+      let h = w / ar;
+      if (h > availH) { h = availH; w = h * ar; }
+      frame.style.width = Math.round(w) + "px";
+      frame.style.height = Math.round(h) + "px";
     }
 
     /* Guarda la proporción real de cada hoja cuando su imagen carga */
@@ -279,7 +289,7 @@ const CONFIG = {
       function store() {
         if (img.naturalWidth && img.naturalHeight) {
           s.dataset.ratio = (img.naturalWidth / img.naturalHeight).toFixed(4);
-          if (s === sheets[current]) applyRatio(current);
+          if (s === sheets[current]) sizeFrame();
         }
       }
       if (img.complete) store();
@@ -329,7 +339,7 @@ const CONFIG = {
       label.textContent = "Hoja " + (current + 1) + " de " + N;
       prevBtn.disabled = true;
       nextBtn.disabled = true;
-      applyRatio(current);
+      sizeFrame();
 
       window.setTimeout(function () {
         outgoing.classList.remove("turning-next", "turning-prev");
@@ -374,8 +384,11 @@ const CONFIG = {
       tx = null;
     }, { passive: true });
 
-    applyRatio(0);
+    sizeFrame();
     paint();
+
+    window.addEventListener("resize", sizeFrame);
+    document.addEventListener("fullscreenchange", sizeFrame);
   }
 
   if (document.getElementById("carta-book")) initCartaBook();

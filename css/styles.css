@@ -278,9 +278,9 @@ h3 { font-size: 1.55rem; }
    GALERÍA
    ============================================================ */
 .galeria { background: var(--sillar); }
-.gallery { columns: 3 280px; column-gap: 1.1rem; }
+.gallery { columns: 3 280px; column-gap: 1.5rem; }
 .gallery figure {
-  break-inside: avoid; margin-bottom: 1.1rem;
+  break-inside: avoid; margin-bottom: 1.5rem;
   position: relative; border-radius: 12px; overflow: hidden; cursor: zoom-in;
   box-shadow: var(--shadow-soft);
 }
@@ -317,17 +317,16 @@ h3 { font-size: 1.55rem; }
   background: radial-gradient(ellipse at 50% -20%, #6b5140 0%, #3a2a20 45%, #20150e 100%);
   overflow: hidden;
 }
-/* El marco adopta la proporción de la hoja activa (--ar = ancho/alto) */
+/* El marco adopta la proporción de la hoja activa */
 .carta-frame {
   position: relative;
-  --ar: 1.414;
   width: 100%;
-  max-width: min(100%, calc(78vh * var(--ar)));
-  aspect-ratio: var(--ar);
+  max-width: 860px;
+  height: min(72vh, 640px);
   margin: 0 auto;
-  perspective: 2600px;
+  perspective: 2400px;
   perspective-origin: left center;
-  transition: max-width 0.5s ease;
+  transition: width 0.45s ease, height 0.45s ease;
 }
 .carta-sheet {
   position: absolute; inset: 0; margin: 0;
@@ -372,14 +371,14 @@ h3 { font-size: 1.55rem; }
 
 .carta-book:fullscreen { max-width: none; border-radius: 0; border: 0; }
 .carta-book:fullscreen .carta-stage { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-.carta-book:fullscreen .carta-frame { max-width: min(94vw, calc(88vh * var(--ar))); }
+
 
 /* ============================================================
    UBICACIÓN
    ============================================================ */
 .ubicacion { background: var(--sillar); }
 .datos { list-style: none; display: grid; gap: 1.4rem; margin: 1.8rem 0 2rem; }
-.datos li { display: flex; gap: 1rem; align-items: flex-start; }
+.datos li { display: flex; gap: 1.5rem; align-items: flex-start; }
 .dato-ico {
   flex: 0 0 auto; width: 44px; height: 44px; border-radius: 12px;
   background: rgba(109,26,42,0.08); color: var(--vino);
@@ -486,7 +485,7 @@ h3 { font-size: 1.55rem; }
    ============================================================ */
 @media (max-width: 1024px) {
   .platos-grid { grid-template-columns: repeat(3, 1fr); }
-  .main-nav { gap: 1rem; }
+  .main-nav { gap: 1.5rem; }
   .main-nav a { font-size: 0.86rem; }
 }
 
@@ -549,7 +548,7 @@ h3 { font-size: 1.55rem; }
 .momentos .momentos-hint { color: rgba(255,255,255,0.6); }
 .momentos-wrap { position: relative; }
 .momentos-strip {
-  display: flex; gap: 1rem;
+  display: flex; gap: 1.5rem;
   overflow-x: auto; overflow-y: hidden;
   scroll-snap-type: x proximity;
   padding: 0.5rem 0.2rem 1.1rem;
@@ -563,7 +562,7 @@ h3 { font-size: 1.55rem; }
 .momento {
   position: relative; flex: 0 0 auto; display: block;
   border: 0; padding: 0; margin: 0;
-  height: clamp(200px, 30vw, 340px);
+  height: clamp(230px, 34vw, 400px);
   border-radius: 14px; overflow: hidden;
   scroll-snap-align: start;
   cursor: zoom-in; background: var(--volcan);

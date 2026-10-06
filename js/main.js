@@ -317,7 +317,29 @@ const CONFIG = {
       if (audioCtx.state === "suspended") audioCtx.resume();
       return audioCtx;
     }
+    /* Sonido real de pasar página (CC0, BigSoundBank) con respaldo sintetizado */
+    const sndNext = new Audio("audio/pagina.mp3");
+    const sndPrev = new Audio("audio/pagina-rev.mp3");
+    let soundFileOk = true;
+    [sndNext, sndPrev].forEach(function (s) {
+      s.preload = "auto";
+      s.volume = 0.55;
+      s.addEventListener("error", function () { soundFileOk = false; });
+    });
     function playPageSound(reverse) {
+      if (!soundOn) return;
+      if (soundFileOk) {
+        const snd = reverse ? sndPrev : sndNext;
+        try {
+          snd.currentTime = 0;
+          const pr = snd.play();
+          if (pr && pr.catch) pr.catch(function () { playSynth(reverse); });
+          return;
+        } catch (e) { /* cae al respaldo */ }
+      }
+      playSynth(reverse);
+    }
+    function playSynth(reverse) {
       if (!soundOn) return;
       const ctx = ensureAudio();
       if (!ctx) return;

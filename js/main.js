@@ -7,8 +7,8 @@
 const CONFIG = {
   WHATSAPP_NUMBER: "51923750726",          // sin "+", sin espacios
   WHATSAPP_MESSAGE: "Hola, me gustaría hacer una consulta a Tradiciones Arequipeñas.",
-  PHONE_DISPLAY: "943 977 800",
-  PHONE_TEL: "+51943977800",
+  PHONE_DISPLAY: "923 750 726",
+  PHONE_TEL: "+51923750726",
   ADDRESS: "Av. Trapiche N°208, Comas",
   MAPS_URL: "https://maps.app.goo.gl/2Z57RCyN2YgWudFt8",
   HORARIO: null,                            // ej. "Lun a Dom · 10:00 a 22:00" (null = muestra "Consúltanos por WhatsApp")

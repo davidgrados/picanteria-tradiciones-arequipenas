@@ -74,7 +74,7 @@ const CONFIG = {
       const target = document.querySelector(id);
       if (!target) return;
       e.preventDefault();
-      const top = target.getBoundingClientRect().top + window.scrollY - 78;
+      const top = target.getBoundingClientRect().top + window.scrollY - 90;
       window.scrollTo({ top: top, behavior: "smooth" });
     });
   });

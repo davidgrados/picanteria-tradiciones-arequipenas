@@ -21,7 +21,7 @@
   --radius: 14px;
   --shadow: 0 18px 50px -22px rgba(67, 16, 26, 0.45);
   --shadow-soft: 0 10px 30px -18px rgba(67, 16, 26, 0.35);
-  --header-h: 74px;
+  --header-h: 82px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -138,10 +138,10 @@ h3 { font-size: 1.55rem; }
 }
 
 .brand { display: inline-flex; align-items: center; gap: 0.7rem; margin-right: auto; }
-.brand img { width: 58px; height: auto; border-radius: 8px; box-shadow: 0 4px 14px -6px rgba(0,0,0,0.4); }
+.brand img { width: 78px; height: auto; border-radius: 8px; box-shadow: 0 4px 14px -6px rgba(0,0,0,0.4); }
 .brand-text { display: flex; flex-direction: column; line-height: 1; }
-.brand-text strong { font-family: var(--font-display); font-size: 1.28rem; font-weight: 700; color: #fff; }
-.brand-text em { font-style: normal; font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--oro-soft); }
+.brand-text strong { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: #fff; }
+.brand-text em { font-style: normal; font-size: 0.8rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--oro-soft); }
 .site-header.scrolled .brand-text strong { color: var(--vino); }
 .site-header.scrolled .brand-text em { color: var(--oro); }
 
@@ -490,7 +490,7 @@ h3 { font-size: 1.55rem; }
 }
 
 @media (max-width: 860px) {
-  :root { --header-h: 64px; }
+  :root { --header-h: 70px; }
   .nav-toggle { display: block; }
   .main-nav {
     position: fixed; top: var(--header-h); left: 0; right: 0;

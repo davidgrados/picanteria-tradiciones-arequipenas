@@ -262,6 +262,36 @@ const CONFIG = {
     strip.addEventListener("scroll", updateArrows, { passive: true });
     window.addEventListener("resize", updateArrows);
     updateArrows();
+
+    /* Avance automático suave (pausa al interactuar o salir de pantalla) */
+    const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let autoTimer = null;
+    function autoAdvance() {
+      const max = strip.scrollWidth - strip.clientWidth;
+      if (strip.scrollLeft >= max - 4) {
+        strip.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        strip.scrollBy({ left: Math.max(280, strip.clientWidth * 0.75), behavior: "smooth" });
+      }
+    }
+    function startAuto() {
+      if (reducedMotion || autoTimer) return;
+      autoTimer = setInterval(autoAdvance, 3600);
+    }
+    function stopAuto() {
+      if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+    }
+    function restartAuto() { stopAuto(); startAuto(); }
+    strip.addEventListener("mouseenter", stopAuto);
+    strip.addEventListener("mouseleave", startAuto);
+    strip.addEventListener("touchstart", stopAuto, { passive: true });
+    strip.addEventListener("touchend", function () { window.setTimeout(startAuto, 4000); }, { passive: true });
+    if (prevBtn) prevBtn.addEventListener("click", restartAuto);
+    if (nextBtn) nextBtn.addEventListener("click", restartAuto);
+    const visObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) startAuto(); else stopAuto(); });
+    }, { threshold: 0.2 });
+    visObs.observe(strip);
   }
   /* ============================================================
      CARTA: flipbook con giro de hoja tipo periódico

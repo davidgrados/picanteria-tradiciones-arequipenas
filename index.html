@@ -230,24 +230,34 @@
       <p class="section-intro">Conoce todos nuestros sabores, platos y especialidades. Navega página por página.</p>
     </header>
 
-    <div class="carta-viewer" id="carta-viewer">
+    <div class="carta-book" id="carta-book">
       <div class="carta-toolbar">
-        <button class="tb-btn" id="carta-prev" aria-label="Página anterior">‹</button>
-        <span class="carta-page" id="carta-page">Página 1 de 1</span>
-        <button class="tb-btn" id="carta-next" aria-label="Página siguiente">›</button>
+        <button class="tb-btn" id="carta-prev" aria-label="Hoja anterior" disabled>‹</button>
+        <span class="carta-page" id="carta-page">Hoja 1 de 4</span>
+        <button class="tb-btn" id="carta-next" aria-label="Hoja siguiente">›</button>
         <span class="tb-sep" aria-hidden="true"></span>
-        <button class="tb-btn" id="carta-zoom-out" aria-label="Alejar">−</button>
-        <span class="carta-zoom" id="carta-zoom">100%</span>
-        <button class="tb-btn" id="carta-zoom-in" aria-label="Acercar">+</button>
-        <span class="tb-sep" aria-hidden="true"></span>
-        <button class="tb-btn" id="carta-download" aria-label="Descargar carta">Descargar</button>
+        <button class="tb-btn" id="carta-zoom" aria-label="Ampliar hoja">Ampliar</button>
         <button class="tb-btn" id="carta-fullscreen" aria-label="Pantalla completa">Pantalla completa</button>
       </div>
+
       <div class="carta-stage" id="carta-stage">
-        <canvas id="carta-canvas"></canvas>
-        <div class="carta-loading" id="carta-loading">Cargando carta…</div>
+        <div class="carta-frame" id="carta-frame">
+          <article class="carta-sheet is-active" data-index="0">
+            <img src="carta_1.jpeg" alt="Carta Tradiciones Arequipeñas: almuerzo arequipeño de lunes a sábado, caldos del día, entradas y platos de fondo" />
+          </article>
+          <article class="carta-sheet" data-index="1">
+            <img src="carta_2.jpeg" alt="Carta Tradiciones Arequipeñas: segunda hoja del menú" loading="lazy" />
+          </article>
+          <article class="carta-sheet" data-index="2">
+            <img src="carta_3.jpeg" alt="Carta general: pescados y mariscos, bebidas, camarones, adicionales y postre arequipeño" loading="lazy" />
+          </article>
+          <article class="carta-sheet" data-index="3">
+            <img src="carta_4.jpeg" alt="Carta Tradiciones Arequipeñas: cuarta hoja del menú" loading="lazy" />
+          </article>
+          <div class="carta-shade" aria-hidden="true"></div>
+        </div>
       </div>
-      <p class="carta-hint">Usa las flechas ← → para cambiar de página.</p>
+      <p class="carta-hint">Usa las flechas ← → o desliza para pasar hoja. Toca la hoja para ampliarla.</p>
     </div>
   </div>
 </section>
@@ -335,7 +345,6 @@
   <button class="lb-nav lb-next" id="lb-next" aria-label="Siguiente">›</button>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

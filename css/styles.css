@@ -288,11 +288,11 @@ h3 { font-size: 1.55rem; }
 .gallery figure:hover img { transform: scale(1.05); filter: brightness(1.03); }
 
 /* ============================================================
-   CARTA (visor PDF)
+   CARTA (flipbook con giro de hoja tipo periódico)
    ============================================================ */
 .carta { background: var(--sillar-2); }
-.carta-viewer {
-  max-width: 860px; margin: 0 auto;
+.carta-book {
+  max-width: 940px; margin: 0 auto;
   background: var(--card); border-radius: 18px;
   box-shadow: var(--shadow); overflow: hidden;
   border: 1px solid var(--line);
@@ -304,21 +304,75 @@ h3 { font-size: 1.55rem; }
 .tb-btn {
   background: rgba(255,255,255,0.08); color: #fff; border: 1px solid rgba(255,255,255,0.14);
   min-width: 38px; height: 38px; padding: 0 0.8rem; border-radius: 9px;
-  font-size: 1rem; transition: background 0.2s;
+  font-size: 0.95rem; transition: background 0.2s;
 }
-.tb-btn:hover { background: rgba(255,255,255,0.18); }
-.carta-page, .carta-zoom { font-size: 0.88rem; padding: 0 0.4rem; font-variant-numeric: tabular-nums; }
+.tb-btn:hover:not(:disabled) { background: rgba(255,255,255,0.18); }
+.tb-btn:disabled { opacity: 0.3; cursor: default; }
+.carta-page { font-size: 0.88rem; padding: 0 0.4rem; font-variant-numeric: tabular-nums; }
 .tb-sep { width: 1px; height: 24px; background: rgba(255,255,255,0.16); margin: 0 0.4rem; }
+
 .carta-stage {
-  position: relative; min-height: 380px;
-  display: flex; align-items: center; justify-content: center;
-  background: #4a423c; padding: 1.4rem; overflow: auto;
+  position: relative;
+  padding: clamp(0.9rem, 2.8vw, 2rem);
+  background: radial-gradient(ellipse at 50% -20%, #6b5140 0%, #3a2a20 45%, #20150e 100%);
+  overflow: hidden;
 }
-#carta-canvas { box-shadow: 0 8px 40px -12px rgba(0,0,0,0.6); border-radius: 4px; }
-.carta-loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; }
-.carta-hint { text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 1rem; }
-.carta-viewer:fullscreen .carta-stage { min-height: 100vh; }
-.carta-viewer:fullscreen #carta-canvas { max-width: none; }
+/* El marco adopta la proporción de la hoja activa (--ar = ancho/alto) */
+.carta-frame {
+  position: relative;
+  --ar: 1.414;
+  width: 100%;
+  max-width: min(100%, calc(78vh * var(--ar)));
+  aspect-ratio: var(--ar);
+  margin: 0 auto;
+  perspective: 2600px;
+  perspective-origin: left center;
+  transition: max-width 0.5s ease;
+}
+.carta-sheet {
+  position: absolute; inset: 0; margin: 0;
+  opacity: 0; pointer-events: none;
+  transform-origin: left center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #fdf3d0;
+  box-shadow: 0 34px 70px -30px rgba(0,0,0,0.95), 0 0 0 1px rgba(255,255,255,0.07);
+  cursor: zoom-in;
+}
+.carta-sheet img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.carta-sheet.is-active { opacity: 1; pointer-events: auto; z-index: 30; }
+.carta-sheet.is-past { opacity: 0; z-index: 10; }
+.carta-sheet.is-future { opacity: 0; z-index: 5; }
+.carta-sheet.turning-next { animation: pageTurnNext 0.92s cubic-bezier(0.5, 0.02, 0.35, 1) forwards; z-index: 40; }
+.carta-sheet.turning-prev { animation: pageTurnPrev 0.92s cubic-bezier(0.5, 0.02, 0.35, 1) forwards; z-index: 40; }
+
+@keyframes pageTurnNext {
+  0%   { opacity: 1; transform: rotateY(0deg); }
+  55%  { opacity: 1; }
+  100% { opacity: 0; transform: rotateY(-168deg); }
+}
+@keyframes pageTurnPrev {
+  0%   { opacity: 0; transform: rotateY(-168deg); }
+  45%  { opacity: 1; }
+  100% { opacity: 1; transform: rotateY(0deg); }
+}
+
+/* Sombra que barre la hoja entrante durante el giro */
+.carta-shade {
+  position: absolute; inset: 0; z-index: 35; pointer-events: none;
+  opacity: 0; border-radius: 5px;
+  background: linear-gradient(90deg, rgba(0,0,0,0.5), rgba(0,0,0,0.14) 35%, rgba(0,0,0,0) 62%);
+}
+.carta-frame.turning .carta-shade { animation: shadeSweep 0.92s ease-out; }
+@keyframes shadeSweep { 0% { opacity: 0.8; } 100% { opacity: 0; } }
+
+.carta-hint { text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 0.9rem; }
+
+.carta-book:fullscreen { max-width: none; border-radius: 0; border: 0; }
+.carta-book:fullscreen .carta-stage { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+.carta-book:fullscreen .carta-frame { max-width: min(94vw, calc(88vh * var(--ar))); }
 
 /* ============================================================
    UBICACIÓN

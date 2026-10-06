@@ -12,7 +12,7 @@ const CONFIG = {
   ADDRESS: "Av. Trapiche N°208, Comas",
   MAPS_URL: "https://maps.app.goo.gl/2Z57RCyN2YgWudFt8",
   HORARIO: null,                            // ej. "Lun a Dom · 10:00 a 22:00" (null = muestra "Consúltanos por WhatsApp")
-  PDF_URL: "carta.pdf"
+  CARTA_PAGES: ["carta_1.jpeg", "carta_2.jpeg", "carta_3.jpeg", "carta_4.jpeg"]
 };
 
 (function () {
@@ -104,6 +104,7 @@ const CONFIG = {
     "Imagen de WhatsApp 2024-09-11 a las 13.24.06_aab569cf.jpg"
   ];
 
+  const galleryList = [];
   const gallery = document.getElementById("gallery");
   if (gallery) {
     GALLERY_IMAGES.forEach(function (name, i) {
@@ -115,21 +116,25 @@ const CONFIG = {
       img.dataset.index = i;
       fig.appendChild(img);
       gallery.appendChild(fig);
+      galleryList.push({ src: img.src, alt: img.alt });
     });
   }
 
-  /* ---- Lightbox ---- */
+  /* ---- Lightbox (admite varias colecciones: galería y carta) ---- */
   const lightbox = document.getElementById("lightbox");
   const lbImg = document.getElementById("lb-img");
   const lbClose = document.getElementById("lb-close");
   const lbPrev = document.getElementById("lb-prev");
   const lbNext = document.getElementById("lb-next");
+  let lbList = [];
   let lbIndex = 0;
 
-  function openLightbox(i) {
+  function openLightbox(list, i) {
+    if (!list || !list.length) return;
+    lbList = list;
     lbIndex = i;
-    lbImg.src = gallery.children[i].querySelector("img").src;
-    lbImg.alt = gallery.children[i].querySelector("img").alt;
+    lbImg.src = lbList[lbIndex].src;
+    lbImg.alt = lbList[lbIndex].alt;
     lightbox.classList.add("open");
     lightbox.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
@@ -140,18 +145,17 @@ const CONFIG = {
     document.body.style.overflow = "";
   }
   function lbStep(dir) {
-    const n = gallery.children.length;
-    lbIndex = (lbIndex + dir + n) % n;
-    const img = gallery.children[lbIndex].querySelector("img");
-    lbImg.src = img.src;
-    lbImg.alt = img.alt;
+    if (!lbList.length) return;
+    lbIndex = (lbIndex + dir + lbList.length) % lbList.length;
+    lbImg.src = lbList[lbIndex].src;
+    lbImg.alt = lbList[lbIndex].alt;
   }
 
   if (gallery) {
     gallery.addEventListener("click", function (e) {
       const img = e.target.closest("img");
       if (!img) return;
-      openLightbox(parseInt(img.dataset.index, 10));
+      openLightbox(galleryList, parseInt(img.dataset.index, 10));
     });
   }
   if (lbClose) lbClose.addEventListener("click", closeLightbox);
@@ -179,104 +183,142 @@ const CONFIG = {
   }
 
   /* ============================================================
-     VISOR DE CARTA (PDF.js)
+     CARTA: flipbook con giro de hoja tipo periódico
      ============================================================ */
-  function initCartaViewer() {
-    if (typeof pdfjsLib === "undefined") {
-      const loading = document.getElementById("carta-loading");
-      if (loading) loading.textContent = "No se pudo cargar el visor de la carta.";
-      return;
-    }
-    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-
-    const canvas = document.getElementById("carta-canvas");
-    const ctx = canvas.getContext("2d");
+  function initCartaBook() {
+    const book = document.getElementById("carta-book");
+    const frame = document.getElementById("carta-frame");
     const stage = document.getElementById("carta-stage");
-    const pageLabel = document.getElementById("carta-page");
-    const zoomLabel = document.getElementById("carta-zoom");
-    const loading = document.getElementById("carta-loading");
+    const sheets = Array.prototype.slice.call(frame.querySelectorAll(".carta-sheet"));
+    const label = document.getElementById("carta-page");
+    const prevBtn = document.getElementById("carta-prev");
+    const nextBtn = document.getElementById("carta-next");
+    const zoomBtn = document.getElementById("carta-zoom");
+    const fsBtn = document.getElementById("carta-fullscreen");
+    const N = sheets.length;
+    let current = 0;
+    let busy = false;
 
-    let pdf = null;
-    let currentPage = 1;
-    let scale = 1;
-    let baseScale = 1;
+    const cartaList = sheets.map(function (s) {
+      const img = s.querySelector("img");
+      return { src: img.src, alt: img.alt };
+    });
 
-    function fitScale(pageWidth) {
-      const avail = Math.max(stage.clientWidth - 48, 260);
-      return Math.max(0.5, avail / pageWidth);
+    /* El marco adopta la proporción de la hoja activa (--ar = ancho/alto) */
+    function applyRatio(index) {
+      const img = sheets[index].querySelector("img");
+      let ar = 1.414;
+      if (img && img.naturalWidth && img.naturalHeight) ar = img.naturalWidth / img.naturalHeight;
+      else if (sheets[index].dataset.ratio) ar = parseFloat(sheets[index].dataset.ratio);
+      frame.style.setProperty("--ar", ar.toFixed(4));
     }
 
-    function render() {
-      pdf.getPage(currentPage).then(function (page) {
-        const viewport = page.getViewport({ scale: scale });
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        canvas.width = Math.floor(viewport.width * dpr);
-        canvas.height = Math.floor(viewport.height * dpr);
-        canvas.style.width = Math.floor(viewport.width) + "px";
-        canvas.style.height = Math.floor(viewport.height) + "px";
-        page.render({ canvasContext: ctx, viewport: viewport, transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null }).promise
-          .then(function () { if (loading) loading.style.display = "none"; });
-        pageLabel.textContent = "Página " + currentPage + " de " + pdf.numPages;
-        zoomLabel.textContent = Math.round(scale / baseScale * 100) + "%";
+    /* Guarda la proporción real de cada hoja cuando su imagen carga */
+    sheets.forEach(function (s) {
+      const img = s.querySelector("img");
+      function store() {
+        if (img.naturalWidth && img.naturalHeight) {
+          s.dataset.ratio = (img.naturalWidth / img.naturalHeight).toFixed(4);
+          if (s === sheets[current]) applyRatio(current);
+        }
+      }
+      if (img.complete) store();
+      else img.addEventListener("load", store);
+    });
+
+    function paint() {
+      sheets.forEach(function (s, i) {
+        s.classList.toggle("is-active", i === current);
+        s.classList.toggle("is-past", i < current);
+        s.classList.toggle("is-future", i > current);
+        s.style.zIndex = i === current ? 30 : (i < current ? 10 : 5);
       });
+      label.textContent = "Hoja " + (current + 1) + " de " + N;
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === N - 1;
     }
 
-    pdfjsLib.getDocument(CONFIG.PDF_URL).promise.then(function (doc) {
-      pdf = doc;
-      doc.getPage(1).then(function (p) {
-        baseScale = fitScale(p.getViewport({ scale: 1 }).width);
-        scale = baseScale;
-        render();
-      });
-    }).catch(function () {
-      if (loading) loading.textContent = "No se pudo abrir la carta.";
+    function go(dir) {
+      if (busy) return;
+      const target = current + dir;
+      if (target < 0 || target >= N) return;
+      busy = true;
+
+      const outgoing = sheets[current];
+      const incoming = sheets[target];
+
+      frame.classList.add("turning");
+
+      if (dir > 0) {
+        outgoing.style.zIndex = 40;
+        outgoing.classList.remove("is-active", "is-future", "is-past");
+        outgoing.classList.add("turning-next");
+        incoming.style.zIndex = 20;
+        incoming.classList.remove("is-future", "is-past");
+        incoming.classList.add("is-active");
+      } else {
+        incoming.style.zIndex = 40;
+        incoming.classList.remove("is-past", "is-future");
+        incoming.classList.add("is-active", "turning-prev");
+        outgoing.style.zIndex = 20;
+        outgoing.classList.remove("is-active");
+        outgoing.classList.add("is-future");
+      }
+
+      current = target;
+      label.textContent = "Hoja " + (current + 1) + " de " + N;
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+      applyRatio(current);
+
+      window.setTimeout(function () {
+        outgoing.classList.remove("turning-next", "turning-prev");
+        incoming.classList.remove("turning-next", "turning-prev");
+        frame.classList.remove("turning");
+        busy = false;
+        paint();
+      }, 930);
+    }
+
+    prevBtn.addEventListener("click", function () { go(-1); });
+    nextBtn.addEventListener("click", function () { go(1); });
+    zoomBtn.addEventListener("click", function () { openLightbox(cartaList, current); });
+
+    /* Tocar la hoja la abre ampliada en el lightbox */
+    stage.addEventListener("click", function (e) {
+      if (e.target.closest(".carta-sheet")) openLightbox(cartaList, current);
     });
 
-    document.getElementById("carta-prev").addEventListener("click", function () {
-      if (!pdf) return; currentPage = Math.max(1, currentPage - 1); render();
-    });
-    document.getElementById("carta-next").addEventListener("click", function () {
-      if (!pdf) return; currentPage = Math.min(pdf.numPages, currentPage + 1); render();
-    });
-    document.getElementById("carta-zoom-in").addEventListener("click", function () {
-      scale = Math.min(scale * 1.25, baseScale * 4); render();
-    });
-    document.getElementById("carta-zoom-out").addEventListener("click", function () {
-      scale = Math.max(scale / 1.25, baseScale * 0.5); render();
-    });
-    document.getElementById("carta-fullscreen").addEventListener("click", function () {
-      const viewer = document.getElementById("carta-viewer");
+    /* Pantalla completa */
+    fsBtn.addEventListener("click", function () {
       if (document.fullscreenElement) document.exitFullscreen();
-      else if (viewer.requestFullscreen) viewer.requestFullscreen();
-    });
-    document.getElementById("carta-download").addEventListener("click", function () {
-      const a = document.createElement("a");
-      a.href = CONFIG.PDF_URL;
-      a.download = CONFIG.PDF_URL.split("/").pop();
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+      else if (book.requestFullscreen) book.requestFullscreen();
     });
 
-    /* teclado: ← → dentro del visor */
+    /* Teclado ← → cuando la carta está a la vista o en pantalla completa */
     document.addEventListener("keydown", function (e) {
-      const viewer = document.getElementById("carta-viewer");
-      const active = document.activeElement;
-      const inViewer = viewer.contains(active) || document.fullscreenElement === viewer;
-      if (!inViewer) return;
-      if (e.key === "ArrowLeft") { currentPage = Math.max(1, currentPage - 1); render(); }
-      if (e.key === "ArrowRight") { currentPage = Math.min(pdf.numPages, currentPage + 1); render(); }
+      if (lightbox.classList.contains("open")) return;
+      const inFull = document.fullscreenElement === book;
+      const rect = book.getBoundingClientRect();
+      const visible = rect.top < window.innerHeight * 0.7 && rect.bottom > window.innerHeight * 0.3;
+      if (!inFull && !visible) return;
+      if (e.key === "ArrowLeft") go(-1);
+      if (e.key === "ArrowRight") go(1);
     });
 
-    window.addEventListener("resize", function () {
-      if (!pdf) return;
-      pdf.getPage(currentPage).then(function (p) {
-        baseScale = fitScale(p.getViewport({ scale: 1 }).width);
-        scale = baseScale;
-        render();
-      });
-    });
+    /* Deslizar en móvil para pasar hoja */
+    let tx = null;
+    stage.addEventListener("touchstart", function (e) { tx = e.touches[0].clientX; }, { passive: true });
+    stage.addEventListener("touchend", function (e) {
+      if (tx === null) return;
+      const dx = e.changedTouches[0].clientX - tx;
+      if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+      tx = null;
+    }, { passive: true });
+
+    applyRatio(0);
+    paint();
   }
 
-  if (document.getElementById("carta-viewer")) initCartaViewer();
+  if (document.getElementById("carta-book")) initCartaBook();
 })();

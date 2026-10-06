@@ -594,3 +594,5 @@ h3 { font-size: 1.55rem; }
 .strip-next { right: -16px; }
 @media (max-width: 860px) { .strip-nav { display: none; } }
 @media (max-width: 560px) { .momento { height: clamp(180px, 52vw, 260px); } }
+
+.gallery-more { text-align: center; margin-top: 2.4rem; }

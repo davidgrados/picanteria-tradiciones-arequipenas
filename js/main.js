@@ -118,6 +118,27 @@ const CONFIG = {
       gallery.appendChild(fig);
       galleryList.push({ src: img.src, alt: img.alt });
     });
+
+    /* Mostrar por lotes para no saturar la galería */
+    const GALLERY_STEP = 12;
+    let visibleCount = GALLERY_STEP;
+    const moreBtn = document.getElementById("gallery-more");
+    function renderGallery() {
+      const figs = gallery.children;
+      for (let i = 0; i < figs.length; i++) {
+        figs[i].style.display = i < visibleCount ? "" : "none";
+      }
+      if (moreBtn) {
+        const rest = GALLERY_IMAGES.length - visibleCount;
+        moreBtn.style.display = rest <= 0 ? "none" : "";
+        moreBtn.textContent = "Ver más fotos (" + rest + ")";
+      }
+    }
+    if (moreBtn) moreBtn.addEventListener("click", function () {
+      visibleCount = Math.min(GALLERY_IMAGES.length, visibleCount + GALLERY_STEP);
+      renderGallery();
+    });
+    renderGallery();
   }
 
   /* ---- Lightbox (admite varias colecciones: galería y carta) ---- */

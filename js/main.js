@@ -306,6 +306,69 @@ const CONFIG = {
     const nextBtn = document.getElementById("carta-next");
     const zoomBtn = document.getElementById("carta-zoom");
     const fsBtn = document.getElementById("carta-fullscreen");
+    /* ---- Sonido de pasar hoja (sintetizado con Web Audio, sin archivos) ---- */
+    let audioCtx = null;
+    let soundOn = true;
+    try { soundOn = localStorage.getItem("carta-sound") !== "off"; } catch (e) {}
+    function ensureAudio() {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      if (!audioCtx) audioCtx = new AC();
+      if (audioCtx.state === "suspended") audioCtx.resume();
+      return audioCtx;
+    }
+    function playPageSound(reverse) {
+      if (!soundOn) return;
+      const ctx = ensureAudio();
+      if (!ctx) return;
+      const dur = 0.42;
+      const sr = ctx.sampleRate;
+      const len = Math.max(1, Math.floor(sr * dur));
+      const buffer = ctx.createBuffer(1, len, sr);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < len; i++) {
+        const t = i / len;
+        const fade = t < 0.03 ? t / 0.03 : 1;
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, 2.2) * fade;
+      }
+      const src = ctx.createBufferSource();
+      src.buffer = buffer;
+      const filter = ctx.createBiquadFilter();
+      filter.type = "bandpass";
+      filter.Q.value = 0.9;
+      const now = ctx.currentTime;
+      const f0 = reverse ? 2400 : 800;
+      const f1 = reverse ? 700 : 2600;
+      filter.frequency.setValueAtTime(f0, now);
+      filter.frequency.exponentialRampToValueAtTime(f1, now + dur);
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.22, now + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
+      src.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      src.start(now);
+      src.stop(now + dur + 0.02);
+    }
+    const soundBtn = document.getElementById("carta-sound");
+    function paintSound() {
+      if (!soundBtn) return;
+      soundBtn.setAttribute("aria-pressed", soundOn ? "true" : "false");
+      const on = soundBtn.querySelector(".ico-on");
+      const off = soundBtn.querySelector(".ico-off");
+      if (on) on.hidden = !soundOn;
+      if (off) off.hidden = soundOn;
+    }
+    if (soundBtn) {
+      soundBtn.addEventListener("click", function () {
+        soundOn = !soundOn;
+        try { localStorage.setItem("carta-sound", soundOn ? "on" : "off"); } catch (e) {}
+        paintSound();
+        if (soundOn) playPageSound(false);
+      });
+    }
+    paintSound();
     const N = sheets.length;
     let current = 0;
     let busy = false;
@@ -369,6 +432,7 @@ const CONFIG = {
       const incoming = sheets[target];
 
       frame.classList.add("turning");
+      playPageSound(dir < 0);
 
       if (dir > 0) {
         outgoing.style.zIndex = 40;

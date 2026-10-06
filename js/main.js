@@ -295,13 +295,11 @@ const CONFIG = {
       else if (book.requestFullscreen) book.requestFullscreen();
     });
 
-    /* Teclado ← → cuando la carta está a la vista o en pantalla completa */
+    /* Teclado ← → con la carta enfocada o en pantalla completa (no secuestra el scroll) */
     document.addEventListener("keydown", function (e) {
       if (lightbox.classList.contains("open")) return;
       const inFull = document.fullscreenElement === book;
-      const rect = book.getBoundingClientRect();
-      const visible = rect.top < window.innerHeight * 0.7 && rect.bottom > window.innerHeight * 0.3;
-      if (!inFull && !visible) return;
+      if (!inFull && !book.contains(document.activeElement)) return;
       if (e.key === "ArrowLeft") go(-1);
       if (e.key === "ArrowRight") go(1);
     });

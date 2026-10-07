@@ -414,6 +414,7 @@ const CONFIG = {
       pageFlip.loadFromHTML(pages);
     }
 
+    let lastIndex = 0;
     function currentIndex() { return pageFlip ? pageFlip.getCurrentPageIndex() : 0; }
     function updateUI() {
       const i = currentIndex();
@@ -425,7 +426,7 @@ const CONFIG = {
     function prevPage() { if (pageFlip) { pageFlip.flipPrev(); playPageSound(true); } }
 
     if (pageFlip) {
-      pageFlip.on("flip", updateUI);
+      pageFlip.on("flip", function (e) { lastIndex = e.data; updateUI(); });
       pageFlip.on("changeState", updateUI);
     }
     updateUI();
@@ -434,20 +435,18 @@ const CONFIG = {
     nextBtn.addEventListener("click", nextPage);
     zoomBtn.addEventListener("click", function () { openLightbox(cartaList, currentIndex()); });
 
-    /* Tocar la hoja la abre ampliada (solo si fue un toque, no un arrastre) */
-    let touchStartX = null, touchStartY = null, dragMoved = false;
-    stage.addEventListener("touchstart", function (e) {
-      const t = e.touches[0];
-      touchStartX = t.clientX; touchStartY = t.clientY; dragMoved = false;
-    }, { passive: true });
-    stage.addEventListener("touchmove", function (e) {
-      if (touchStartX === null) return;
-      const t = e.touches[0];
-      if (Math.abs(t.clientX - touchStartX) > 12 || Math.abs(t.clientY - touchStartY) > 12) dragMoved = true;
-    }, { passive: true });
-    stage.addEventListener("click", function (e) {
-      if (dragMoved) { dragMoved = false; return; }
-      if (e.target.closest(".carta-page")) openLightbox(cartaList, currentIndex());
+    /* Ampliar solo con el botón: tocar la hoja se reserva para pasar página */
+    const zoomFloat = document.getElementById("carta-zoom-float");
+    if (zoomFloat) zoomFloat.addEventListener("click", function () { openLightbox(cartaList, currentIndex()); });
+
+    /* Si el zoom del navegador redimensiona el libro, mantén la hoja actual */
+    let resizeTimer = null;
+    window.addEventListener("resize", function () {
+      if (!pageFlip) return;
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        if (pageFlip.getCurrentPageIndex() !== lastIndex) pageFlip.turnToPage(lastIndex);
+      }, 320);
     });
 
     /* Pantalla completa */

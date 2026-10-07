@@ -419,23 +419,21 @@ const CONFIG = {
     function currentIndex() { return pageFlip ? pageFlip.getCurrentPageIndex() : 0; }
     function updateUI() {
       const i = currentIndex();
-      label.textContent = (i + 1) + " / " + N;
-      prevBtn.disabled = i <= 0;
-      nextBtn.disabled = i >= N - 1;
+      const landscape = !!(pageFlip && pageFlip.getOrientation() === "landscape");
+      if (landscape) {
+        const right = Math.min(i + 1, N - 1);
+        label.textContent = (i + 1) + "-" + (right + 1) + " / " + N;
+        prevBtn.disabled = i <= 0;
+        nextBtn.disabled = i >= N - 2;
+      } else {
+        label.textContent = (i + 1) + " / " + N;
+        prevBtn.disabled = i <= 0;
+        nextBtn.disabled = i >= N - 1;
+      }
       thumbButtons.forEach(function (b, k) { b.classList.toggle("is-current", k === i); });
     }
-    function nextPage() {
-      noteAction();
-      if (!pageFlip) return;
-      const t = pageFlip.getCurrentPageIndex() + 1;
-      if (t < N) { pageFlip.flip(t); playPageSound(false); }
-    }
-    function prevPage() {
-      noteAction();
-      if (!pageFlip) return;
-      const t = pageFlip.getCurrentPageIndex() - 1;
-      if (t >= 0) { pageFlip.flip(t); playPageSound(true); }
-    }
+    function nextPage() { noteAction(); if (pageFlip) { pageFlip.flipNext(); playPageSound(false); } }
+    function prevPage() { noteAction(); if (pageFlip) { pageFlip.flipPrev(); playPageSound(true); } }
 
     if (pageFlip) {
       pageFlip.on("flip", function (e) { lastIndex = e.data; updateUI(); });
@@ -495,7 +493,9 @@ const CONFIG = {
       if (icoPause) icoPause.hidden = false;
       autoTimer = setInterval(function () {
         if (!pageFlip) return;
-        if (pageFlip.getCurrentPageIndex() >= N - 1) { pageFlip.turnToPage(0); playPageSound(false); }
+        const ls = pageFlip.getOrientation() === "landscape";
+        const atEnd = ls ? (pageFlip.getCurrentPageIndex() >= N - 2) : (pageFlip.getCurrentPageIndex() >= N - 1);
+        if (atEnd) { pageFlip.turnToPage(0); playPageSound(false); }
         else { pageFlip.flipNext(); playPageSound(false); }
       }, 4200);
     }

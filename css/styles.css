@@ -395,9 +395,19 @@ h3 { font-size: 1.55rem; }
 /* ============================================================
    CONTACTO
    ============================================================ */
-.contacto { background: var(--vino-deep); color: #fff; position: relative; overflow: hidden; }
+.contacto {
+  color: #fff; position: relative; overflow: hidden;
+  background:
+    radial-gradient(ellipse 78% 70% at 50% -12%, rgba(220, 153, 73, 0.22), transparent 62%),
+    radial-gradient(ellipse 95% 95% at 50% 118%, rgba(196, 95, 21, 0.26), transparent 70%),
+    linear-gradient(168deg, #821615 0%, #5a2217 46%, #210F08 100%);
+}
+.contacto::after {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; z-index: 1;
+  background: linear-gradient(90deg, transparent, rgba(220, 153, 73, 0.9), transparent);
+}
 .contacto::before {
-  content: ""; position: absolute; inset: 0; opacity: 0.06;
+  content: ""; position: absolute; inset: 0; opacity: 0.08;
   background-image: linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px);
   background-size: 26px 26px;
 }

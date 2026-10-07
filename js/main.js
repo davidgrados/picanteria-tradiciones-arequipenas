@@ -533,7 +533,7 @@ const CONFIG = {
       else if (book.requestFullscreen) book.requestFullscreen();
     });
 
-    /* Deslizar / arrastrar para pasar hoja (control propio, sin conflicto) */
+    /* Gestos: clic/toque limpio amplía la hoja; deslizar/arrastrar pasa de hoja */
     let swipeX = null, swipeY = null, swipeT = 0;
     stage.addEventListener("touchstart", function (e) {
       if (e.touches.length !== 1) return;
@@ -546,17 +546,25 @@ const CONFIG = {
       const dt = Date.now() - swipeT;
       swipeX = null;
       if (dt > 900) return;
-      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 12) {
+        if (e.target.closest(".carta-page")) openLightbox(cartaList, currentIndex());
+      } else if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
         if (dx < 0) nextPage(); else prevPage();
       }
     }, { passive: true });
-    let mdX = null;
-    stage.addEventListener("mousedown", function (e) { mdX = e.clientX; });
+    let mdX = null, mdY = null;
+    stage.addEventListener("mousedown", function (e) { mdX = e.clientX; mdY = e.clientY; });
     window.addEventListener("mouseup", function (e) {
       if (mdX === null) return;
-      const dx = e.clientX - mdX;
-      mdX = null;
-      if (Math.abs(dx) > 60) { if (dx < 0) nextPage(); else prevPage(); }
+      const dx = e.clientX - mdX, dy = e.clientY - mdY;
+      mdX = null; mdY = null;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 8) {
+        if (e.target.closest(".carta-page")) openLightbox(cartaList, currentIndex());
+      } else if (Math.abs(dx) > 60) {
+        if (dx < 0) nextPage(); else prevPage();
+      }
     });
     /* Teclado ← → con la carta enfocada o en pantalla completa */
     document.addEventListener("keydown", function (e) {

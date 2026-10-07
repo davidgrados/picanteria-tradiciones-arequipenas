@@ -425,8 +425,18 @@ const CONFIG = {
       nextBtn.disabled = i >= N - 1;
       thumbButtons.forEach(function (b, k) { b.classList.toggle("is-current", k === i); });
     }
-    function nextPage() { noteAction(); if (pageFlip) { pageFlip.flipNext(); playPageSound(false); } }
-    function prevPage() { noteAction(); if (pageFlip) { pageFlip.flipPrev(); playPageSound(true); } }
+    function nextPage() {
+      noteAction();
+      if (!pageFlip) return;
+      const t = pageFlip.getCurrentPageIndex() + 1;
+      if (t < N) { pageFlip.flip(t); playPageSound(false); }
+    }
+    function prevPage() {
+      noteAction();
+      if (!pageFlip) return;
+      const t = pageFlip.getCurrentPageIndex() - 1;
+      if (t >= 0) { pageFlip.flip(t); playPageSound(true); }
+    }
 
     if (pageFlip) {
       pageFlip.on("flip", function (e) { lastIndex = e.data; updateUI(); });

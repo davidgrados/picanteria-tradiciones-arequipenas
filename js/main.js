@@ -217,7 +217,8 @@ const CONFIG = {
     { f: "momento-08.jpg", cap: "Celebraciones en la mesa", alt: "Celebración de clientes alrededor de la mesa" },
     { f: "momento-09.jpg", cap: "Show en vivo", alt: "Show musical en vivo en la picantería" },
     { f: "momento-10.jpg", cap: "El tradicional de la casa", alt: "Escultura de la vasija tradicional arequipeña con el nombre del restaurante" },
-    { f: "momento-11.jpg", cap: "Con nuestros visitantes", alt: "Visitantes posando en Tradiciones Arequipeñas" }
+    { f: "momento-11.jpg", cap: "Con nuestros visitantes", alt: "Visitantes posando en Tradiciones Arequipeñas" },
+    { f: "momento-12.jpg", cap: "Altar de la Virgen", alt: "Altar con la imagen de la Virgen, flores y velas en Tradiciones Arequipeñas" }
   ];
 
   const strip = document.getElementById("momentos-strip");

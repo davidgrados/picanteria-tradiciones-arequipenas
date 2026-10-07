@@ -443,10 +443,11 @@ h3 { font-size: 1.55rem; }
   background: rgba(16,9,7,0.94);
   display: flex; align-items: center; justify-content: center;
   opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s;
+  overflow: hidden;
 }
 .lightbox.open { opacity: 1; visibility: visible; }
 .lb-figure { max-width: 86vw; max-height: 82vh; display: flex; align-items: center; justify-content: center; }
-.lb-figure img { max-width: 86vw; max-height: 82vh; object-fit: contain; border-radius: 6px; }
+.lb-figure img { max-width: 86vw; max-height: 82vh; object-fit: contain; border-radius: 6px; transform-origin: center center; will-change: transform; cursor: zoom-in; }
 .lb-close, .lb-nav {
   position: absolute; background: rgba(255,255,255,0.08); color: #fff; border: none;
   width: 54px; height: 54px; border-radius: 50%; font-size: 1.8rem; line-height: 1;
@@ -456,6 +457,20 @@ h3 { font-size: 1.55rem; }
 .lb-close { top: 22px; right: 22px; }
 .lb-prev { left: 18px; top: 50%; transform: translateY(-50%); }
 .lb-next { right: 18px; top: 50%; transform: translateY(-50%); }
+.lb-zoom {
+  position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 8px; z-index: 1520;
+  background: rgba(0,0,0,0.55); padding: 8px 10px; border-radius: 999px;
+}
+.lb-zoom-btn {
+  background: rgba(255,255,255,0.12); color: #fff; border: none;
+  width: 40px; height: 40px; border-radius: 50%; font-size: 1.4rem; line-height: 1;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.lb-zoom-btn:hover { background: rgba(255,255,255,0.24); }
+.lb-zoom-reset { width: auto; padding: 0 14px; border-radius: 999px; font-size: 0.85rem; }
+.lb-zoom-val { color: #fff; font-size: 0.9rem; min-width: 52px; text-align: center; font-variant-numeric: tabular-nums; }
 
 /* ============================================================
    ANIMACIONES DE APARICIÓN

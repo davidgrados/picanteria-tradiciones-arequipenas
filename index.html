@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
-<link rel="stylesheet" href="css/styles.css?v=37" />
+<link rel="stylesheet" href="css/styles.css?v=38" />
 
 <script type="application/ld+json">
 {
@@ -386,8 +386,14 @@
 <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Visor de imágenes">
   <button class="lb-close" id="lb-close" aria-label="Cerrar">×</button>
   <button class="lb-nav lb-prev" id="lb-prev" aria-label="Anterior">‹</button>
-  <figure class="lb-figure"><img id="lb-img" src="" alt="" /></figure>
+  <figure class="lb-figure" id="lb-figure"><img id="lb-img" src="" alt="" /></figure>
   <button class="lb-nav lb-next" id="lb-next" aria-label="Siguiente">›</button>
+  <div class="lb-zoom">
+    <button class="lb-zoom-btn" id="lb-zoom-out" type="button" aria-label="Alejar">−</button>
+    <span class="lb-zoom-val" id="lb-zoom-val">100%</span>
+    <button class="lb-zoom-btn" id="lb-zoom-in" type="button" aria-label="Acercar">+</button>
+    <button class="lb-zoom-btn lb-zoom-reset" id="lb-zoom-reset" type="button" aria-label="Restablecer zoom">Restablecer</button>
+  </div>
 </div>
 
 <!-- ============ COOKIES ============ -->
@@ -446,6 +452,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
-<script src="js/main.js?v=37"></script>
+<script src="js/main.js?v=38"></script>
 </body>
 </html>

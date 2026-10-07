@@ -461,5 +461,69 @@ const CONFIG = {
     }
   }
 
+  /* ============================================================
+     COOKIES: aviso, preferencias y carga condicionada del mapa
+     ============================================================ */
+  const COOKIE_KEY = "aqp-cookies";
+  const cookieBanner = document.getElementById("cookie-banner");
+  const cookieModal = document.getElementById("cookie-modal");
+  const cbAnalytics = document.getElementById("cookie-analytics");
+  const cbThird = document.getElementById("cookie-third");
+  const mapaIframe = document.getElementById("mapa-iframe");
+  const mapaPlaceholder = document.getElementById("mapa-placeholder");
+
+  function loadMap() {
+    if (mapaIframe && !mapaIframe.getAttribute("src") && mapaIframe.dataset.src) {
+      mapaIframe.setAttribute("src", mapaIframe.dataset.src);
+      if (mapaPlaceholder) mapaPlaceholder.hidden = true;
+    }
+  }
+  function readConsent() {
+    try { return JSON.parse(localStorage.getItem(COOKIE_KEY) || "null"); } catch (e) { return null; }
+  }
+  function saveConsent(c) {
+    try { localStorage.setItem(COOKIE_KEY, JSON.stringify(c)); } catch (e) {}
+  }
+  function applyConsent(c) { if (c && c.third) loadMap(); }
+  function openCookieModal() {
+    const c = readConsent() || { analytics: false, third: false };
+    if (cbAnalytics) cbAnalytics.checked = !!c.analytics;
+    if (cbThird) cbThird.checked = !!c.third;
+    if (cookieModal) cookieModal.hidden = false;
+  }
+  function closeCookieModal() { if (cookieModal) cookieModal.hidden = true; }
+  function commitConsent(c) {
+    saveConsent(c); applyConsent(c);
+    if (cookieBanner) cookieBanner.hidden = true;
+    closeCookieModal();
+  }
+
+  const savedConsent = readConsent();
+  if (savedConsent) applyConsent(savedConsent);
+  else if (cookieBanner) cookieBanner.hidden = false;
+
+  const elAccept = document.getElementById("cookie-accept");
+  const elReject = document.getElementById("cookie-reject");
+  const elConfig = document.getElementById("cookie-config");
+  const elMReject = document.getElementById("cookie-modal-reject");
+  const elMSave = document.getElementById("cookie-modal-save");
+  const elOpen = document.getElementById("cookie-open");
+  const elMapBtn = document.getElementById("mapa-cargar");
+
+  if (elAccept) elAccept.addEventListener("click", function () { commitConsent({ analytics: true, third: true }); });
+  if (elReject) elReject.addEventListener("click", function () { commitConsent({ analytics: false, third: false }); });
+  if (elConfig) elConfig.addEventListener("click", function () { if (cookieBanner) cookieBanner.hidden = true; openCookieModal(); });
+  if (elMReject) elMReject.addEventListener("click", function () { commitConsent({ analytics: false, third: false }); });
+  if (elMSave) elMSave.addEventListener("click", function () {
+    commitConsent({ analytics: !!(cbAnalytics && cbAnalytics.checked), third: !!(cbThird && cbThird.checked) });
+  });
+  if (elOpen) elOpen.addEventListener("click", openCookieModal);
+  if (elMapBtn) elMapBtn.addEventListener("click", function () {
+    const c = readConsent() || { analytics: false, third: false };
+    c.third = true; saveConsent(c); loadMap();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && cookieModal && !cookieModal.hidden) closeCookieModal();
+  });
   if (document.getElementById("carta-book")) initCartaBook();
 })();

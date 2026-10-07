@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
-<link rel="stylesheet" href="css/styles.css?v=25" />
+<link rel="stylesheet" href="css/styles.css?v=26" />
 
 <script type="application/ld+json">
 {
@@ -311,8 +311,12 @@
         <a href="https://wa.me/51923750726" class="btn btn-outline" id="whatsapp-ubicacion" target="_blank" rel="noopener">Pedir por WhatsApp</a>
       </div>
     </div>
-    <div class="mapa reveal">
-      <iframe title="Mapa de Picantería Turística Tradiciones Arequipeñas" src="https://www.google.com/maps?q=-11.9293186,-77.0669544&z=17&hl=es&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    <div class="mapa reveal" id="mapa">
+      <iframe id="mapa-iframe" title="Mapa de Picantería Turística Tradiciones Arequipeñas" data-src="https://www.google.com/maps?q=-11.9293186,-77.0669544&z=17&hl=es&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      <div class="mapa-placeholder" id="mapa-placeholder">
+        <p>El mapa de Google es un contenido de terceros y solo se carga si aceptas esas cookies.</p>
+        <button class="btn btn-primary" id="mapa-cargar" type="button">Ver el mapa</button>
+      </div>
     </div>
   </div>
 </section>
@@ -354,6 +358,7 @@
   </div>
   <div class="footer-bottom">
     <span>© <span id="year">2026</span> Picantería Turística Tradiciones Arequipeñas. Todos los derechos reservados.</span>
+    <button class="cookie-link" id="cookie-open" type="button">Configurar cookies</button>
   </div>
 </footer>
 
@@ -370,7 +375,62 @@
   <button class="lb-nav lb-next" id="lb-next" aria-label="Siguiente">›</button>
 </div>
 
+<!-- ============ COOKIES ============ -->
+<div class="cookie-banner" id="cookie-banner" role="dialog" aria-labelledby="cookie-title" hidden>
+  <div class="cookie-box">
+    <div class="cookie-text">
+      <h3 id="cookie-title">Tu privacidad y las cookies</h3>
+      <p>Usamos cookies necesarias para que el sitio funcione y, con tu permiso, cookies de terceros para mostrarte el mapa de nuestra ubicación. Puedes aceptarlas, rechazarlas o elegir cuáles permites.</p>
+    </div>
+    <div class="cookie-actions">
+      <button class="btn btn-outline cookie-btn" id="cookie-config" type="button">Configurar</button>
+      <button class="btn btn-outline cookie-btn" id="cookie-reject" type="button">Rechazar</button>
+      <button class="btn btn-primary cookie-btn" id="cookie-accept" type="button">Aceptar todas</button>
+    </div>
+  </div>
+</div>
+
+<div class="cookie-modal" id="cookie-modal" role="dialog" aria-modal="true" aria-labelledby="cookie-modal-title" hidden>
+  <div class="cookie-modal-box">
+    <h3 id="cookie-modal-title">Configuración de cookies</h3>
+    <p class="cookie-modal-intro">Elige qué permites. Las necesarias no se pueden desactivar porque el sitio no funciona sin ellas.</p>
+    <ul class="cookie-list">
+      <li>
+        <div class="cookie-item">
+          <div class="cookie-item-copy">
+            <strong>Necesarias</strong>
+            <span>Imprescindibles para navegar y recordar tus preferencias.</span>
+          </div>
+          <label class="cookie-switch"><input type="checkbox" checked disabled /><span aria-hidden="true"></span></label>
+        </div>
+      </li>
+      <li>
+        <div class="cookie-item">
+          <div class="cookie-item-copy">
+            <strong>Analíticas</strong>
+            <span>Nos ayudan a entender cómo se usa la web para mejorarla.</span>
+          </div>
+          <label class="cookie-switch"><input type="checkbox" id="cookie-analytics" /><span aria-hidden="true"></span></label>
+        </div>
+      </li>
+      <li>
+        <div class="cookie-item">
+          <div class="cookie-item-copy">
+            <strong>De terceros (mapa)</strong>
+            <span>Permiten cargar el mapa de Google con nuestra ubicación.</span>
+          </div>
+          <label class="cookie-switch"><input type="checkbox" id="cookie-third" /><span aria-hidden="true"></span></label>
+        </div>
+      </li>
+    </ul>
+    <div class="cookie-modal-actions">
+      <button class="btn btn-outline cookie-btn" id="cookie-modal-reject" type="button">Rechazar todo</button>
+      <button class="btn btn-primary cookie-btn" id="cookie-modal-save" type="button">Guardar preferencias</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
-<script src="js/main.js?v=25"></script>
+<script src="js/main.js?v=26"></script>
 </body>
 </html>

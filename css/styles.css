@@ -579,3 +579,66 @@ h3 { font-size: 1.55rem; }
 .carta-flip-fallback { display: flex; flex-direction: column; gap: 1.2rem; height: auto; max-height: 100%; overflow-y: auto; }
 .carta-flip-fallback .carta-page { width: 100%; height: auto; }
 .carta-flip-fallback .carta-page img { height: auto; }
+
+/* ============================================================
+   COOKIES
+   ============================================================ */
+.cookie-banner {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 1400;
+  padding: 1rem; animation: cookieIn 0.5s cubic-bezier(0.2,0.7,0.2,1) both;
+}
+@keyframes cookieIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+.cookie-banner[hidden], .cookie-modal[hidden] { display: none; }
+.cookie-box {
+  max-width: 1100px; margin: 0 auto; background: var(--card);
+  border: 1px solid var(--line); border-radius: 16px;
+  box-shadow: 0 24px 60px -24px rgba(74,37,19,0.65);
+  padding: 1.2rem 1.4rem; display: flex; gap: 1.4rem; align-items: center; flex-wrap: wrap;
+}
+.cookie-text { flex: 1 1 360px; }
+.cookie-text h3 { font-size: 1.35rem; margin-bottom: 0.3rem; }
+.cookie-text p { color: var(--muted); font-size: 0.92rem; line-height: 1.5; }
+.cookie-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.cookie-btn { padding: 0.7rem 1.3rem; font-size: 0.92rem; }
+.btn-outline.cookie-btn { color: var(--vino); }
+.cookie-modal {
+  position: fixed; inset: 0; z-index: 1600; background: rgba(33,15,8,0.62);
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  display: flex; align-items: center; justify-content: center; padding: 1.2rem;
+}
+.cookie-modal-box {
+  width: min(560px, 100%); background: var(--card); border-radius: 18px;
+  box-shadow: 0 30px 80px -30px rgba(0,0,0,0.7); padding: 1.6rem;
+}
+.cookie-modal-box h3 { font-size: 1.55rem; margin-bottom: 0.4rem; }
+.cookie-modal-intro { color: var(--muted); font-size: 0.92rem; margin-bottom: 1.2rem; }
+.cookie-list { list-style: none; display: grid; gap: 0.9rem; }
+.cookie-list li { border-top: 1px solid var(--line); padding-top: 0.9rem; }
+.cookie-list li:first-child { border-top: 0; padding-top: 0; }
+.cookie-item { display: flex; gap: 1rem; align-items: center; justify-content: space-between; }
+.cookie-item-copy { display: flex; flex-direction: column; }
+.cookie-item-copy strong { font-family: var(--font-display); font-size: 1.18rem; color: var(--volcan); }
+.cookie-item-copy span { font-size: 0.85rem; color: var(--muted); }
+.cookie-switch { position: relative; flex: 0 0 auto; width: 48px; height: 26px; cursor: pointer; }
+.cookie-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+.cookie-switch span { position: absolute; inset: 0; background: rgba(124,109,99,0.35); border-radius: 999px; transition: background 0.25s; }
+.cookie-switch span::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: transform 0.25s; box-shadow: 0 2px 6px rgba(0,0,0,0.25); }
+.cookie-switch input:checked + span { background: var(--vino); }
+.cookie-switch input:checked + span::after { transform: translateX(22px); }
+.cookie-modal-actions { display: flex; gap: 0.6rem; justify-content: flex-end; margin-top: 1.4rem; flex-wrap: wrap; }
+.cookie-link { background: none; border: 0; color: var(--oro-soft); font-size: 0.82rem; text-decoration: underline; margin-left: 0.8rem; cursor: pointer; }
+.cookie-link:hover { color: #fff; }
+.mapa { position: relative; }
+.mapa-placeholder {
+  position: absolute; inset: 0; z-index: 2; border-radius: 18px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem;
+  text-align: center; padding: 1.6rem;
+  background: linear-gradient(160deg, var(--sillar-2), var(--sillar));
+}
+.mapa-placeholder p { color: var(--muted); font-size: 0.92rem; max-width: 34ch; }
+@media (max-width: 700px) {
+  .cookie-box { flex-direction: column; align-items: stretch; }
+  .cookie-actions .cookie-btn { flex: 1 1 auto; justify-content: center; }
+  .footer-bottom { display: flex; flex-direction: column; gap: 0.5rem; }
+  .cookie-link { margin-left: 0; }
+}

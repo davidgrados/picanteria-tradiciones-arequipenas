@@ -299,18 +299,20 @@ const CONFIG = {
      ============================================================ */
   function initCartaBook() {
     const book = document.getElementById("carta-book");
-    const frame = document.getElementById("carta-frame");
+    const flipEl = document.getElementById("carta-flip");
     const stage = document.getElementById("carta-stage");
-    const sheets = Array.prototype.slice.call(frame.querySelectorAll(".carta-sheet"));
+    const pages = Array.prototype.slice.call(flipEl.querySelectorAll(".carta-page"));
     const label = document.getElementById("carta-page");
     const prevBtn = document.getElementById("carta-prev");
     const nextBtn = document.getElementById("carta-next");
     const zoomBtn = document.getElementById("carta-zoom");
     const fsBtn = document.getElementById("carta-fullscreen");
-    /* ---- Sonido de pasar hoja (sintetizado con Web Audio, sin archivos) ---- */
-    let audioCtx = null;
+    const N = pages.length;
+
+    /* ---- Sonido de pasar página (real CC0) con respaldo sintetizado ---- */
     let soundOn = true;
     try { soundOn = localStorage.getItem("carta-sound") !== "off"; } catch (e) {}
+    let audioCtx = null;
     function ensureAudio() {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return null;
@@ -318,7 +320,6 @@ const CONFIG = {
       if (audioCtx.state === "suspended") audioCtx.resume();
       return audioCtx;
     }
-    /* Sonido real de pasar página (CC0, BigSoundBank) con respaldo sintetizado */
     const sndNext = new Audio("audio/pagina.mp3");
     const sndPrev = new Audio("audio/pagina-rev.mp3");
     let soundFileOk = true;
@@ -327,25 +328,10 @@ const CONFIG = {
       s.volume = 0.55;
       s.addEventListener("error", function () { soundFileOk = false; });
     });
-    function playPageSound(reverse) {
-      if (!soundOn) return;
-      if (soundFileOk) {
-        const snd = reverse ? sndPrev : sndNext;
-        try {
-          snd.currentTime = 0;
-          const pr = snd.play();
-          if (pr && pr.catch) pr.catch(function () { playSynth(reverse); });
-          return;
-        } catch (e) { /* cae al respaldo */ }
-      }
-      playSynth(reverse);
-    }
     function playSynth(reverse) {
-      if (!soundOn) return;
       const ctx = ensureAudio();
       if (!ctx) return;
-      const dur = 0.42;
-      const sr = ctx.sampleRate;
+      const dur = 0.42, sr = ctx.sampleRate;
       const len = Math.max(1, Math.floor(sr * dur));
       const buffer = ctx.createBuffer(1, len, sr);
       const data = buffer.getChannelData(0);
@@ -357,22 +343,29 @@ const CONFIG = {
       const src = ctx.createBufferSource();
       src.buffer = buffer;
       const filter = ctx.createBiquadFilter();
-      filter.type = "bandpass";
-      filter.Q.value = 0.9;
+      filter.type = "bandpass"; filter.Q.value = 0.9;
       const now = ctx.currentTime;
-      const f0 = reverse ? 2400 : 800;
-      const f1 = reverse ? 700 : 2600;
-      filter.frequency.setValueAtTime(f0, now);
-      filter.frequency.exponentialRampToValueAtTime(f1, now + dur);
+      filter.frequency.setValueAtTime(reverse ? 2400 : 800, now);
+      filter.frequency.exponentialRampToValueAtTime(reverse ? 700 : 2600, now + dur);
       const gain = ctx.createGain();
       gain.gain.setValueAtTime(0.0001, now);
       gain.gain.exponentialRampToValueAtTime(0.22, now + 0.015);
       gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
-      src.connect(filter);
-      filter.connect(gain);
-      gain.connect(ctx.destination);
-      src.start(now);
-      src.stop(now + dur + 0.02);
+      src.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+      src.start(now); src.stop(now + dur + 0.02);
+    }
+    function playPageSound(reverse) {
+      if (!soundOn) return;
+      if (soundFileOk) {
+        const snd = reverse ? sndPrev : sndNext;
+        try {
+          snd.currentTime = 0;
+          const pr = snd.play();
+          if (pr && pr.catch) pr.catch(function () { playSynth(reverse); });
+          return;
+        } catch (e) {}
+      }
+      playSynth(reverse);
     }
     const soundBtn = document.getElementById("carta-sound");
     function paintSound() {
@@ -392,109 +385,56 @@ const CONFIG = {
       });
     }
     paintSound();
-    const N = sheets.length;
-    let current = 0;
-    let busy = false;
 
-    const cartaList = sheets.map(function (s) {
-      const img = s.querySelector("img");
+    const cartaList = pages.map(function (pg) {
+      const img = pg.querySelector("img");
       return { src: img.src, alt: img.alt };
     });
 
-        /* Dimensiona el marco en píxeles según la proporción de la hoja activa */
-    function ratioOf(index) {
-      const img = sheets[index].querySelector("img");
-      if (img && img.naturalWidth && img.naturalHeight) return img.naturalWidth / img.naturalHeight;
-      if (sheets[index].dataset.ratio) return parseFloat(sheets[index].dataset.ratio);
-      return 1.414;
-    }
-    function sizeFrame() {
-      const pad = 32;
-      const availW = Math.max(260, stage.clientWidth - pad);
-      const availH = Math.max(280, window.innerHeight * 0.72);
-      const ar = ratioOf(current);
-      let w = availW;
-      let h = w / ar;
-      if (h > availH) { h = availH; w = h * ar; }
-      frame.style.width = Math.round(w) + "px";
-      frame.style.height = Math.round(h) + "px";
-    }
-
-    /* Guarda la proporción real de cada hoja cuando su imagen carga */
-    sheets.forEach(function (s) {
-      const img = s.querySelector("img");
-      function store() {
-        if (img.naturalWidth && img.naturalHeight) {
-          s.dataset.ratio = (img.naturalWidth / img.naturalHeight).toFixed(4);
-          if (s === sheets[current]) sizeFrame();
-        }
-      }
-      if (img.complete) store();
-      else img.addEventListener("load", store);
-    });
-
-    function paint() {
-      sheets.forEach(function (s, i) {
-        s.classList.toggle("is-active", i === current);
-        s.classList.toggle("is-past", i < current);
-        s.classList.toggle("is-future", i > current);
-        s.style.zIndex = i === current ? 30 : (i < current ? 10 : 5);
+    /* ---- Librería StPageFlip: volteo de hoja realista ---- */
+    const hasLib = !!(window.St && window.St.PageFlip);
+    let pageFlip = null;
+    if (hasLib) {
+      pageFlip = new St.PageFlip(flipEl, {
+        width: 1000, height: 1350,
+        size: "stretch",
+        minWidth: 260, maxWidth: 1400,
+        minHeight: 340, maxHeight: 1900,
+        maxShadowOpacity: 0.45,
+        showCover: false,
+        mobileScrollSupport: true,
+        usePortrait: true,
+        drawShadow: true,
+        flippingTime: 1000,
+        startPage: 0,
+        autoSize: true
       });
-      label.textContent = "Hoja " + (current + 1) + " de " + N;
-      prevBtn.disabled = current === 0;
-      nextBtn.disabled = current === N - 1;
+      pageFlip.loadFromHTML(pages);
     }
 
-    function go(dir) {
-      if (busy) return;
-      const target = current + dir;
-      if (target < 0 || target >= N) return;
-      busy = true;
-
-      const outgoing = sheets[current];
-      const incoming = sheets[target];
-
-      frame.classList.add("turning");
-      playPageSound(dir < 0);
-
-      if (dir > 0) {
-        outgoing.style.zIndex = 40;
-        outgoing.classList.remove("is-active", "is-future", "is-past");
-        outgoing.classList.add("turning-next");
-        incoming.style.zIndex = 20;
-        incoming.classList.remove("is-future", "is-past");
-        incoming.classList.add("is-active");
-      } else {
-        incoming.style.zIndex = 40;
-        incoming.classList.remove("is-past", "is-future");
-        incoming.classList.add("is-active", "turning-prev");
-        outgoing.style.zIndex = 20;
-        outgoing.classList.remove("is-active");
-        outgoing.classList.add("is-future");
-      }
-
-      current = target;
-      label.textContent = "Hoja " + (current + 1) + " de " + N;
-      prevBtn.disabled = true;
-      nextBtn.disabled = true;
-      sizeFrame();
-
-      window.setTimeout(function () {
-        outgoing.classList.remove("turning-next", "turning-prev");
-        incoming.classList.remove("turning-next", "turning-prev");
-        frame.classList.remove("turning");
-        busy = false;
-        paint();
-      }, 930);
+    function currentIndex() { return pageFlip ? pageFlip.getCurrentPageIndex() : 0; }
+    function updateUI() {
+      const i = currentIndex();
+      label.textContent = "Hoja " + (i + 1) + " de " + N;
+      prevBtn.disabled = i <= 0;
+      nextBtn.disabled = i >= N - 1;
     }
+    function nextPage() { if (pageFlip) { pageFlip.flipNext(); playPageSound(false); } }
+    function prevPage() { if (pageFlip) { pageFlip.flipPrev(); playPageSound(true); } }
 
-    prevBtn.addEventListener("click", function () { go(-1); });
-    nextBtn.addEventListener("click", function () { go(1); });
-    zoomBtn.addEventListener("click", function () { openLightbox(cartaList, current); });
+    if (pageFlip) {
+      pageFlip.on("flip", updateUI);
+      pageFlip.on("changeState", updateUI);
+    }
+    updateUI();
+
+    prevBtn.addEventListener("click", prevPage);
+    nextBtn.addEventListener("click", nextPage);
+    zoomBtn.addEventListener("click", function () { openLightbox(cartaList, currentIndex()); });
 
     /* Tocar la hoja la abre ampliada en el lightbox */
     stage.addEventListener("click", function (e) {
-      if (e.target.closest(".carta-sheet")) openLightbox(cartaList, current);
+      if (e.target.closest(".carta-page")) openLightbox(cartaList, currentIndex());
     });
 
     /* Pantalla completa */
@@ -503,30 +443,22 @@ const CONFIG = {
       else if (book.requestFullscreen) book.requestFullscreen();
     });
 
-    /* Teclado ← → con la carta enfocada o en pantalla completa (no secuestra el scroll) */
+    /* Teclado ← → con la carta enfocada o en pantalla completa */
     document.addEventListener("keydown", function (e) {
       if (lightbox.classList.contains("open")) return;
       const inFull = document.fullscreenElement === book;
       if (!inFull && !book.contains(document.activeElement)) return;
-      if (e.key === "ArrowLeft") go(-1);
-      if (e.key === "ArrowRight") go(1);
+      if (e.key === "ArrowLeft") prevPage();
+      if (e.key === "ArrowRight") nextPage();
     });
 
-    /* Deslizar en móvil para pasar hoja */
-    let tx = null;
-    stage.addEventListener("touchstart", function (e) { tx = e.touches[0].clientX; }, { passive: true });
-    stage.addEventListener("touchend", function (e) {
-      if (tx === null) return;
-      const dx = e.changedTouches[0].clientX - tx;
-      if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
-      tx = null;
-    }, { passive: true });
-
-    sizeFrame();
-    paint();
-
-    window.addEventListener("resize", sizeFrame);
-    document.addEventListener("fullscreenchange", sizeFrame);
+    /* Si la librería no cargó, muestra las hojas apiladas (degradado elegante) */
+    if (!hasLib) {
+      flipEl.classList.add("carta-flip-fallback");
+      label.textContent = "Carta (" + N + " hojas)";
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+    }
   }
 
   if (document.getElementById("carta-book")) initCartaBook();

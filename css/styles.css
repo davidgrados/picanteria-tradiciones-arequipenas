@@ -317,61 +317,25 @@ h3 { font-size: 1.55rem; }
   padding: clamp(0.9rem, 2.8vw, 2rem);
   background: radial-gradient(ellipse at 50% -20%, #6b5140 0%, #3a2a20 45%, #20150e 100%);
   overflow: hidden;
+  height: min(80vh, 720px);
 }
-/* El marco adopta la proporción de la hoja activa */
-.carta-frame {
-  position: relative;
-  width: 100%;
-  max-width: 860px;
-  height: min(72vh, 640px);
-  margin: 0 auto;
-  perspective: 2400px;
-  perspective-origin: left center;
-  transition: width 0.45s ease, height 0.45s ease;
-}
-.carta-sheet {
-  position: absolute; inset: 0; margin: 0;
-  opacity: 0; pointer-events: none;
-  transform-origin: left center;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  border-radius: 5px;
-  overflow: hidden;
+/* StPageFlip: la librería controla el tamaño de este contenedor */
+.carta-flip { width: 100%; height: 100%; }
+.carta-page {
   background: #fdf3d0;
-  box-shadow: 0 34px 70px -30px rgba(0,0,0,0.95), 0 0 0 1px rgba(255,255,255,0.07);
+  overflow: hidden;
+  box-shadow: 0 26px 60px -26px rgba(0,0,0,0.9);
   cursor: zoom-in;
 }
-.carta-sheet img { width: 100%; height: 100%; object-fit: contain; display: block; }
-.carta-sheet.is-active { opacity: 1; pointer-events: auto; z-index: 30; }
-.carta-sheet.is-past { opacity: 0; z-index: 10; }
-.carta-sheet.is-future { opacity: 0; z-index: 5; }
-.carta-sheet.turning-next { animation: pageTurnNext 0.92s cubic-bezier(0.5, 0.02, 0.35, 1) forwards; z-index: 40; }
-.carta-sheet.turning-prev { animation: pageTurnPrev 0.92s cubic-bezier(0.5, 0.02, 0.35, 1) forwards; z-index: 40; }
-
-@keyframes pageTurnNext {
-  0%   { opacity: 1; transform: rotateY(0deg); }
-  55%  { opacity: 1; }
-  100% { opacity: 0; transform: rotateY(-168deg); }
+.carta-page img {
+  width: 100%; height: 100%; object-fit: contain; display: block;
+  -webkit-user-drag: none; user-select: none;
 }
-@keyframes pageTurnPrev {
-  0%   { opacity: 0; transform: rotateY(-168deg); }
-  45%  { opacity: 1; }
-  100% { opacity: 1; transform: rotateY(0deg); }
-}
-
-/* Sombra que barre la hoja entrante durante el giro */
-.carta-shade {
-  position: absolute; inset: 0; z-index: 35; pointer-events: none;
-  opacity: 0; border-radius: 5px;
-  background: linear-gradient(90deg, rgba(0,0,0,0.5), rgba(0,0,0,0.14) 35%, rgba(0,0,0,0) 62%);
-}
-.carta-frame.turning .carta-shade { animation: shadeSweep 0.92s ease-out; }
-@keyframes shadeSweep { 0% { opacity: 0.8; } 100% { opacity: 0; } }
 
 .carta-hint { text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 0.9rem; }
 
 .carta-book:fullscreen { max-width: none; border-radius: 0; border: 0; }
-.carta-book:fullscreen .carta-stage { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+.carta-book:fullscreen .carta-stage { height: 100vh; }
 
 
 /* ============================================================
@@ -610,3 +574,8 @@ h3 { font-size: 1.55rem; }
 
 .tb-sound svg { display: block; }
 .tb-sound[aria-pressed="false"] { color: rgba(255,255,255,0.45); }
+
+/* Respaldo si la libreria de volteo no carga */
+.carta-flip-fallback { display: flex; flex-direction: column; gap: 1.2rem; height: auto; max-height: 100%; overflow-y: auto; }
+.carta-flip-fallback .carta-page { width: 100%; height: auto; }
+.carta-flip-fallback .carta-page img { height: auto; }

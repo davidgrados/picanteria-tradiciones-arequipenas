@@ -598,15 +598,23 @@ const CONFIG = {
     if (cookieModal) cookieModal.hidden = false;
   }
   function closeCookieModal() { if (cookieModal) cookieModal.hidden = true; }
+  function hideBanner() {
+    if (cookieBanner) cookieBanner.hidden = true;
+    document.body.classList.remove("cookie-banner-open");
+  }
+  function showBanner() {
+    if (cookieBanner) cookieBanner.hidden = false;
+    document.body.classList.add("cookie-banner-open");
+  }
   function commitConsent(c) {
     saveConsent(c); applyConsent(c);
-    if (cookieBanner) cookieBanner.hidden = true;
+    hideBanner();
     closeCookieModal();
   }
 
   const savedConsent = readConsent();
   if (savedConsent) applyConsent(savedConsent);
-  else if (cookieBanner) cookieBanner.hidden = false;
+  else showBanner();
 
   const elAccept = document.getElementById("cookie-accept");
   const elReject = document.getElementById("cookie-reject");
@@ -618,7 +626,7 @@ const CONFIG = {
 
   if (elAccept) elAccept.addEventListener("click", function () { commitConsent({ analytics: true, third: true }); });
   if (elReject) elReject.addEventListener("click", function () { commitConsent({ analytics: false, third: false }); });
-  if (elConfig) elConfig.addEventListener("click", function () { if (cookieBanner) cookieBanner.hidden = true; openCookieModal(); });
+  if (elConfig) elConfig.addEventListener("click", function () { hideBanner(); openCookieModal(); });
   if (elMReject) elMReject.addEventListener("click", function () { commitConsent({ analytics: false, third: false }); });
   if (elMSave) elMSave.addEventListener("click", function () {
     commitConsent({ analytics: !!(cbAnalytics && cbAnalytics.checked), third: !!(cbThird && cbThird.checked) });

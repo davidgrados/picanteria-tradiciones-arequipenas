@@ -669,3 +669,6 @@ h3 { font-size: 1.55rem; }
   transition: background 0.2s, transform 0.2s;
 }
 .carta-zoom-float:hover { background: #fff; transform: translateY(-1px); }
+
+body.cookie-banner-open { padding-bottom: 340px; }
+@media (min-width: 700px) { body.cookie-banner-open { padding-bottom: 170px; } }

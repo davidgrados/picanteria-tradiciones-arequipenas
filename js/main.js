@@ -402,7 +402,6 @@ const CONFIG = {
         minHeight: 340, maxHeight: 1900,
         maxShadowOpacity: 0.45,
         showCover: false,
-        disableFlipByClick: true,
         swipeDistance: 60,
         mobileScrollSupport: true,
         usePortrait: true,

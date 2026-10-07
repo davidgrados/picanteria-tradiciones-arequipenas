@@ -492,15 +492,27 @@ const CONFIG = {
 
     updateUI();
 
-    /* Si el zoom del navegador redimensiona el libro, mantén la hoja actual */
+    /* Si el zoom (pinch) o la rotación redimensionan el libro, mantén la hoja actual */
     let resizeTimer = null;
-    window.addEventListener("resize", function () {
+    function restoreCurrentPage() {
       if (!pageFlip) return;
+      try {
+        if (pageFlip.getCurrentPageIndex() !== lastIndex) pageFlip.turnToPage(lastIndex);
+      } catch (e) {}
+    }
+    function scheduleRestore() {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function () {
-        if (pageFlip.getCurrentPageIndex() !== lastIndex) pageFlip.turnToPage(lastIndex);
-      }, 320);
-    });
+        restoreCurrentPage();
+        setTimeout(restoreCurrentPage, 400);
+      }, 150);
+    }
+    window.addEventListener("resize", scheduleRestore);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", scheduleRestore);
+      window.visualViewport.addEventListener("scroll", scheduleRestore);
+    }
+    window.addEventListener("orientationchange", scheduleRestore);
 
     /* Pantalla completa */
     fsBtn.addEventListener("click", function () {

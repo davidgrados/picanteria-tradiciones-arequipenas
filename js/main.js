@@ -402,6 +402,8 @@ const CONFIG = {
         minHeight: 340, maxHeight: 1900,
         maxShadowOpacity: 0.45,
         showCover: false,
+        disableFlipByClick: true,
+        swipeDistance: 60,
         mobileScrollSupport: true,
         usePortrait: true,
         drawShadow: true,
@@ -432,8 +434,19 @@ const CONFIG = {
     nextBtn.addEventListener("click", nextPage);
     zoomBtn.addEventListener("click", function () { openLightbox(cartaList, currentIndex()); });
 
-    /* Tocar la hoja la abre ampliada en el lightbox */
+    /* Tocar la hoja la abre ampliada (solo si fue un toque, no un arrastre) */
+    let touchStartX = null, touchStartY = null, dragMoved = false;
+    stage.addEventListener("touchstart", function (e) {
+      const t = e.touches[0];
+      touchStartX = t.clientX; touchStartY = t.clientY; dragMoved = false;
+    }, { passive: true });
+    stage.addEventListener("touchmove", function (e) {
+      if (touchStartX === null) return;
+      const t = e.touches[0];
+      if (Math.abs(t.clientX - touchStartX) > 12 || Math.abs(t.clientY - touchStartY) > 12) dragMoved = true;
+    }, { passive: true });
     stage.addEventListener("click", function (e) {
+      if (dragMoved) { dragMoved = false; return; }
       if (e.target.closest(".carta-page")) openLightbox(cartaList, currentIndex());
     });
 

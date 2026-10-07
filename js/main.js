@@ -408,6 +408,7 @@ const CONFIG = {
         usePortrait: true,
         drawShadow: true,
         flippingTime: 1000,
+        useMouseEvents: false,
         startPage: 0,
         autoSize: true
       });
@@ -523,6 +524,31 @@ const CONFIG = {
       else if (book.requestFullscreen) book.requestFullscreen();
     });
 
+    /* Deslizar / arrastrar para pasar hoja (control propio, sin conflicto) */
+    let swipeX = null, swipeY = null, swipeT = 0;
+    stage.addEventListener("touchstart", function (e) {
+      if (e.touches.length !== 1) return;
+      swipeX = e.touches[0].clientX; swipeY = e.touches[0].clientY; swipeT = Date.now();
+    }, { passive: true });
+    stage.addEventListener("touchend", function (e) {
+      if (swipeX === null) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - swipeX, dy = t.clientY - swipeY;
+      const dt = Date.now() - swipeT;
+      swipeX = null;
+      if (dt > 900) return;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        if (dx < 0) nextPage(); else prevPage();
+      }
+    }, { passive: true });
+    let mdX = null;
+    stage.addEventListener("mousedown", function (e) { mdX = e.clientX; });
+    window.addEventListener("mouseup", function (e) {
+      if (mdX === null) return;
+      const dx = e.clientX - mdX;
+      mdX = null;
+      if (Math.abs(dx) > 60) { if (dx < 0) nextPage(); else prevPage(); }
+    });
     /* Teclado ← → con la carta enfocada o en pantalla completa */
     document.addEventListener("keydown", function (e) {
       if (lightbox.classList.contains("open")) return;

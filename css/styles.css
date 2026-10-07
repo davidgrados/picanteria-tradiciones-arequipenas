@@ -298,6 +298,7 @@ h3 { font-size: 1.55rem; }
   border: 1px solid var(--line);
 }
 .carta-bar {
+  position: relative; z-index: 5;
   display: flex; align-items: center; justify-content: center; gap: 0.1rem;
   padding: 0.5rem 0.7rem; background: var(--volcan); color: #fff;
   border-top: 1px solid rgba(255,255,255,0.08); flex-wrap: wrap;

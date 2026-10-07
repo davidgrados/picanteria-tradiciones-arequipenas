@@ -415,12 +415,14 @@ const CONFIG = {
     }
 
     let lastIndex = 0;
+    const thumbButtons = [];
     function currentIndex() { return pageFlip ? pageFlip.getCurrentPageIndex() : 0; }
     function updateUI() {
       const i = currentIndex();
-      label.textContent = "Hoja " + (i + 1) + " de " + N;
+      label.textContent = (i + 1) + " / " + N;
       prevBtn.disabled = i <= 0;
       nextBtn.disabled = i >= N - 1;
+      thumbButtons.forEach(function (b, k) { b.classList.toggle("is-current", k === i); });
     }
     function nextPage() { if (pageFlip) { pageFlip.flipNext(); playPageSound(false); } }
     function prevPage() { if (pageFlip) { pageFlip.flipPrev(); playPageSound(true); } }
@@ -429,15 +431,66 @@ const CONFIG = {
       pageFlip.on("flip", function (e) { lastIndex = e.data; updateUI(); });
       pageFlip.on("changeState", updateUI);
     }
-    updateUI();
 
     prevBtn.addEventListener("click", prevPage);
     nextBtn.addEventListener("click", nextPage);
     zoomBtn.addEventListener("click", function () { openLightbox(cartaList, currentIndex()); });
 
-    /* Ampliar solo con el botón: tocar la hoja se reserva para pasar página */
-    const zoomFloat = document.getElementById("carta-zoom-float");
-    if (zoomFloat) zoomFloat.addEventListener("click", function () { openLightbox(cartaList, currentIndex()); });
+    /* ---- Miniaturas ---- */
+    const thumbsWrap = document.getElementById("carta-thumbs");
+    const thumbsInner = document.getElementById("carta-thumbs-inner");
+    const thumbsBtn = document.getElementById("carta-thumbs-btn");
+    if (thumbsInner) {
+      cartaList.forEach(function (item, i) {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "carta-thumb";
+        b.setAttribute("aria-label", "Ir a la hoja " + (i + 1));
+        const im = document.createElement("img");
+        im.src = item.src;
+        im.alt = "";
+        b.appendChild(im);
+        b.addEventListener("click", function () {
+          if (pageFlip) pageFlip.turnToPage(i);
+          updateUI();
+        });
+        thumbsInner.appendChild(b);
+        thumbButtons.push(b);
+      });
+    }
+    if (thumbsBtn && thumbsWrap) {
+      thumbsBtn.addEventListener("click", function () {
+        const willOpen = thumbsWrap.hidden;
+        thumbsWrap.hidden = !willOpen;
+        thumbsBtn.setAttribute("aria-pressed", willOpen ? "true" : "false");
+      });
+    }
+
+    /* ---- Reproducción automática ---- */
+    const autoBtn = document.getElementById("carta-auto");
+    const icoPlay = autoBtn ? autoBtn.querySelector(".ico-play") : null;
+    const icoPause = autoBtn ? autoBtn.querySelector(".ico-pause") : null;
+    let autoTimer = null;
+    function stopAuto() {
+      if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+      if (autoBtn) autoBtn.setAttribute("aria-pressed", "false");
+      if (icoPlay) icoPlay.hidden = false;
+      if (icoPause) icoPause.hidden = true;
+    }
+    function startAuto() {
+      if (autoTimer || !pageFlip) return;
+      if (autoBtn) autoBtn.setAttribute("aria-pressed", "true");
+      if (icoPlay) icoPlay.hidden = true;
+      if (icoPause) icoPause.hidden = false;
+      autoTimer = setInterval(function () {
+        if (!pageFlip) return;
+        if (pageFlip.getCurrentPageIndex() >= N - 1) { pageFlip.turnToPage(0); playPageSound(false); }
+        else { pageFlip.flipNext(); playPageSound(false); }
+      }, 4200);
+    }
+    if (autoBtn) autoBtn.addEventListener("click", function () { if (autoTimer) stopAuto(); else startAuto(); });
+
+    updateUI();
 
     /* Si el zoom del navegador redimensiona el libro, mantén la hoja actual */
     let resizeTimer = null;

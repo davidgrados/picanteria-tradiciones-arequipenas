@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
-<link rel="stylesheet" href="css/styles.css?v=28" />
+<link rel="stylesheet" href="css/styles.css?v=29" />
 
 <script type="application/ld+json">
 {
@@ -252,21 +252,7 @@
     </header>
 
     <div class="carta-book" id="carta-book">
-      <div class="carta-toolbar">
-        <button class="tb-btn" id="carta-prev" aria-label="Hoja anterior" disabled>‹</button>
-        <span class="carta-page" id="carta-page">Hoja 1 de 4</span>
-        <button class="tb-btn" id="carta-next" aria-label="Hoja siguiente">›</button>
-        <span class="tb-sep" aria-hidden="true"></span>
-        <button class="tb-btn" id="carta-zoom" aria-label="Ampliar hoja">Ampliar</button>
-        <button class="tb-btn" id="carta-fullscreen" aria-label="Pantalla completa">Pantalla completa</button>
-        <button class="tb-btn tb-sound" id="carta-sound" type="button" aria-label="Sonido al pasar hoja" aria-pressed="true">
-          <svg class="ico-on" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M4 9v6h3l5 4V5L7 9H4Z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/></svg>
-          <svg class="ico-off" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" hidden><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M4 9v6h3l5 4V5L7 9H4Z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
-        </button>
-      </div>
-
       <div class="carta-stage" id="carta-stage">
-        <button class="carta-zoom-float" id="carta-zoom-float" type="button" aria-label="Ampliar la hoja actual">Ampliar</button>
         <div class="carta-flip" id="carta-flip">
           <div class="carta-page">
             <img src="carta_1.jpeg" alt="Carta Tradiciones Arequipeñas: almuerzo arequipeño de lunes a sábado, caldos del día, entradas y platos de fondo" />
@@ -282,7 +268,35 @@
           </div>
         </div>
       </div>
-      <p class="carta-hint">Usa las flechas ‹ › o desliza para pasar hoja. Usa "Ampliar" para verla completa.</p>
+
+      <div class="carta-thumbs" id="carta-thumbs" hidden>
+        <div class="carta-thumbs-inner" id="carta-thumbs-inner"></div>
+      </div>
+
+      <div class="carta-bar">
+        <button class="cb-btn" id="carta-prev" type="button" aria-label="Hoja anterior" disabled>&lsaquo;</button>
+        <span class="cb-page" id="carta-page">1 / 4</span>
+        <button class="cb-btn" id="carta-next" type="button" aria-label="Hoja siguiente">&rsaquo;</button>
+        <span class="cb-sep" aria-hidden="true"></span>
+        <button class="cb-btn" id="carta-thumbs-btn" type="button" aria-label="Ver miniaturas" aria-pressed="false">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>
+        </button>
+        <button class="cb-btn" id="carta-zoom" type="button" aria-label="Ampliar la hoja">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="1.7"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M15.6 15.6 21 21M11 8.6v4.8M8.6 11h4.8"/></svg>
+        </button>
+        <button class="cb-btn" id="carta-sound" type="button" aria-label="Sonido al pasar hoja" aria-pressed="true">
+          <svg class="ico-on" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M4 9v6h3l5 4V5L7 9H4Z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/></svg>
+          <svg class="ico-off" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" hidden><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M4 9v6h3l5 4V5L7 9H4Z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+        </button>
+        <button class="cb-btn" id="carta-auto" type="button" aria-label="Reproducción automática" aria-pressed="false">
+          <svg class="ico-play" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M8 5.5v13l11-6.5-11-6.5Z"/></svg>
+          <svg class="ico-pause" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" hidden><path fill="currentColor" d="M7 5h3.6v14H7zM13.4 5H17v14h-3.6z"/></svg>
+        </button>
+        <button class="cb-btn" id="carta-fullscreen" type="button" aria-label="Pantalla completa">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5"/></svg>
+        </button>
+      </div>
+      <p class="carta-hint">Arrastra la hoja o usa ‹ › para pasar. Amplía con el botón de la lupa.</p>
     </div>
   </div>
 </section>
@@ -432,6 +446,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
-<script src="js/main.js?v=28"></script>
+<script src="js/main.js?v=29"></script>
 </body>
 </html>

@@ -424,8 +424,8 @@ const CONFIG = {
       nextBtn.disabled = i >= N - 1;
       thumbButtons.forEach(function (b, k) { b.classList.toggle("is-current", k === i); });
     }
-    function nextPage() { if (pageFlip) { pageFlip.flipNext(); playPageSound(false); } }
-    function prevPage() { if (pageFlip) { pageFlip.flipPrev(); playPageSound(true); } }
+    function nextPage() { noteAction(); if (pageFlip) { pageFlip.flipNext(); playPageSound(false); } }
+    function prevPage() { noteAction(); if (pageFlip) { pageFlip.flipPrev(); playPageSound(true); } }
 
     if (pageFlip) {
       pageFlip.on("flip", function (e) { lastIndex = e.data; updateUI(); });
@@ -451,6 +451,7 @@ const CONFIG = {
         im.alt = "";
         b.appendChild(im);
         b.addEventListener("click", function () {
+          noteAction();
           if (pageFlip) pageFlip.turnToPage(i);
           updateUI();
         });
@@ -500,17 +501,19 @@ const CONFIG = {
         if (pageFlip.getCurrentPageIndex() !== lastIndex) pageFlip.turnToPage(lastIndex);
       } catch (e) {}
     }
+    let lastActionAt = 0;
+    function noteAction() { lastActionAt = Date.now(); }
     function scheduleRestore() {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function () {
+        if (Date.now() - lastActionAt < 1200) return;
         restoreCurrentPage();
         setTimeout(restoreCurrentPage, 400);
-      }, 150);
+      }, 160);
     }
     window.addEventListener("resize", scheduleRestore);
     if (window.visualViewport) {
       window.visualViewport.addEventListener("resize", scheduleRestore);
-      window.visualViewport.addEventListener("scroll", scheduleRestore);
     }
     window.addEventListener("orientationchange", scheduleRestore);
 

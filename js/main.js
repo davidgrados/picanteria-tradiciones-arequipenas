@@ -11,7 +11,7 @@ const CONFIG = {
   PHONE_TEL: "+51923750726",
   ADDRESS: "Av. Trapiche N°208, Comas",
   MAPS_URL: "https://maps.app.goo.gl/2Z57RCyN2YgWudFt8",
-  HORARIO: null,                            // ej. "Lun a Dom · 10:00 a 22:00" (null = muestra "Consúltanos por WhatsApp")
+  HORARIO: "Todos los días de 9:00 am a 6:00 pm",                            // ej. "Lun a Dom · 10:00 a 22:00" (null = muestra "Consúltanos por WhatsApp")
   CARTA_PAGES: ["carta_1.jpeg", "carta_2.jpeg", "carta_3.jpeg", "carta_4.jpeg"]
 };
 

@@ -638,10 +638,12 @@ h3 { font-size: 1.55rem; }
   position: fixed; inset: 0; z-index: 1600; background: rgba(33,15,8,0.62);
   -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
   display: flex; align-items: center; justify-content: center; padding: 1.2rem;
+  overflow-y: auto;
 }
 .cookie-modal-box {
   width: min(560px, 100%); background: var(--card); border-radius: 18px;
   box-shadow: 0 30px 80px -30px rgba(0,0,0,0.7); padding: 1.6rem;
+  max-height: calc(100vh - 2.4rem); overflow-y: auto; margin: auto;
 }
 .cookie-modal-box h3 { font-size: 1.55rem; margin-bottom: 0.4rem; }
 .cookie-modal-intro { color: var(--muted); font-size: 0.92rem; margin-bottom: 1.2rem; }
@@ -675,6 +677,22 @@ h3 { font-size: 1.55rem; }
   .cookie-actions .cookie-btn { flex: 1 1 auto; justify-content: center; }
   .footer-bottom { display: flex; flex-direction: column; gap: 0.5rem; }
   .cookie-link { margin-left: 0; }
+
+  /* Configuración de cookies: compacta y desplazable en celular */
+  .cookie-modal { padding: 0.7rem; }
+  .cookie-modal-box { padding: 1.05rem; border-radius: 14px; max-height: calc(100vh - 1.4rem); max-height: calc(100dvh - 1.4rem); }
+  .cookie-modal-box h3 { font-size: 1.22rem; margin-bottom: 0.2rem; }
+  .cookie-modal-intro { font-size: 0.8rem; line-height: 1.4; margin-bottom: 0.75rem; }
+  .cookie-list { gap: 0.5rem; }
+  .cookie-list li { padding-top: 0.5rem; }
+  .cookie-item { gap: 0.75rem; }
+  .cookie-item-copy strong { font-size: 1rem; }
+  .cookie-item-copy span { font-size: 0.76rem; line-height: 1.35; }
+  .cookie-switch { width: 42px; height: 23px; }
+  .cookie-switch span::after { width: 17px; height: 17px; }
+  .cookie-switch input:checked + span::after { transform: translateX(19px); }
+  .cookie-modal-actions { margin-top: 0.9rem; gap: 0.5rem; }
+  .cookie-modal-actions .cookie-btn { flex: 1 1 auto; justify-content: center; padding: 0.6rem 0.9rem; font-size: 0.85rem; }
 }
 .carta-zoom-float {
   position: absolute; top: 1rem; right: 1rem; z-index: 6;

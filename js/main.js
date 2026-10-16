@@ -25,6 +25,18 @@ const CONFIG = {
     if (el) el.href = waHref;
   });
 
+  /* ---- Video del hero: se reproduce despues de cargar, para no competir
+         por el ancho de banda con la imagen principal (mejora el LCP) ---- */
+  (function heroVideoLater() {
+    const v = document.getElementById("hero-video");
+    if (!v) return;
+    const play = function () {
+      const pr = v.play();
+      if (pr && pr.catch) pr.catch(function () {});
+    };
+    if (document.readyState === "complete") setTimeout(play, 200);
+    else window.addEventListener("load", function () { setTimeout(play, 200); });
+  })();
   /* ---- Horario ---- */
   const horarioEl = document.getElementById("horario-text");
   if (horarioEl && CONFIG.HORARIO) horarioEl.textContent = CONFIG.HORARIO;

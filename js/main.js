@@ -712,5 +712,22 @@ const CONFIG = {
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && cookieModal && !cookieModal.hidden) closeCookieModal();
   });
-  if (document.getElementById("carta-book")) initCartaBook();
+  /* La carta se inicializa solo al acercarse a su sección:
+   así sus 4 imágenes grandes no cargan en la visita inicial */
+(function initCartaWhenVisible() {
+  const book = document.getElementById("carta-book");
+  if (!book) return;
+  const section = document.getElementById("carta") || book;
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(function (entries) {
+      if (entries[0] && entries[0].isIntersecting) {
+        io.disconnect();
+        initCartaBook();
+      }
+    }, { rootMargin: "400px 0px" });
+    io.observe(section);
+  } else {
+    initCartaBook();
+  }
+})();
 })();

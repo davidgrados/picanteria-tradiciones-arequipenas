@@ -30,6 +30,7 @@ const CONFIG = {
   (function heroVideoLater() {
     const v = document.getElementById("hero-video");
     if (!v) return;
+    v.addEventListener("playing", function () { v.classList.add("is-playing"); });
     const play = function () {
       const pr = v.play();
       if (pr && pr.catch) pr.catch(function () {});

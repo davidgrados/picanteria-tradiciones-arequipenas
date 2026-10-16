@@ -6,32 +6,29 @@
   },
   "entries": [
     {
-      "identifier": "urn:ai:tradicionesaqp.com:knowledge:llms-txt",
-      "displayName": "Índice de contenido para agentes (llms.txt)",
-      "type": "text/plain",
+      "identifier": "urn:air:tradicionesaqp.com:knowledge:llms-txt",
+      "displayName": "Índice de contenido del sitio para agentes (llms.txt)",
+      "type": "text/markdown; profile=\"urn:air:agent-skills\"",
       "url": "https://tradicionesaqp.com/llms.txt",
-      "description": "Resumen estructurado en Markdown del sitio de la picantería: páginas principales, platos destacados, horario, ubicación, servicios, medios de pago y datos de contacto."
+      "description": "Índice en Markdown con la información pública de la picantería: platos destacados (chupe de camarones, costillar dorado, ocopa arequipeña), carta digital, horario, ubicación en Comas, servicios y datos de contacto.",
+      "representativeQueries": [
+        "picantería arequipeña en Comas Lima",
+        "dónde comer chupe de camarones en Lima norte",
+        "restaurante arequipeño con delivery y estacionamiento en Comas",
+        "carta y platos típicos de Arequipa en Lima",
+        "Tradiciones Arequipeñas horario y dirección"
+      ]
     },
     {
-      "identifier": "urn:ai:tradicionesaqp.com:content:menu",
-      "displayName": "Carta digital arequipeña",
-      "type": "text/html",
-      "url": "https://tradicionesaqp.com/#carta",
-      "description": "Carta completa en 4 hojas con entradas, platos de fondo arequipeños, pescados y mariscos, bebidas, adicionales y postres."
-    },
-    {
-      "identifier": "urn:ai:tradicionesaqp.com:content:faq",
-      "displayName": "Preguntas frecuentes del restaurante",
-      "type": "text/html",
-      "url": "https://tradicionesaqp.com/#faq",
-      "description": "Respuestas sobre delivery por WhatsApp, reservas, medios de pago (efectivo, tarjetas, Yape y Plin), estacionamiento y atención de eventos y grupos grandes."
-    },
-    {
-      "identifier": "urn:ai:tradicionesaqp.com:knowledge:business",
-      "displayName": "Ficha del negocio en Google Maps",
-      "type": "text/html",
-      "url": "https://maps.app.goo.gl/2Z57RCyN2YgWudFt8",
-      "description": "Ficha oficial del restaurante: dirección en Av. Trapiche N°208, Comas, Lima; horario de atención, calificación 4,2 con 1 174 reseñas e indicaciones para llegar."
+      "identifier": "urn:air:tradicionesaqp.com:registry:catalog",
+      "displayName": "Catálogo de recursos de agentes del dominio",
+      "type": "application/ai-catalog+json",
+      "url": "https://tradicionesaqp.com/.well-known/ai-catalog.json",
+      "description": "Catálogo de descubrimiento (Agentic Resource Discovery) del dominio tradicionesaqp.com, para que agentes y registros de IA encuentren los recursos publicados por la picantería.",
+      "representativeQueries": [
+        "qué recursos expone tradicionesaqp.com a agentes de IA",
+        "catálogo de agentes de la picantería Tradiciones Arequipeñas"
+      ]
     }
   ]
 }

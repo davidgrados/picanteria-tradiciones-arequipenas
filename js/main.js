@@ -12,7 +12,7 @@ const CONFIG = {
   ADDRESS: "Av. Trapiche N°208, Comas",
   MAPS_URL: "https://maps.app.goo.gl/2Z57RCyN2YgWudFt8",
   HORARIO: "Todos los días de 9:00 am a 6:00 pm",                            // ej. "Lun a Dom · 10:00 a 22:00" (null = muestra "Consúltanos por WhatsApp")
-  CARTA_PAGES: ["carta_1.jpeg", "carta_2.jpeg", "carta_3.jpeg", "carta_4.jpeg"]
+  CARTA_PAGES: ["carta_1.webp", "carta_2.webp", "carta_3.webp", "carta_4.webp"]
 };
 
 (function () {
@@ -109,12 +109,12 @@ const CONFIG = {
      GALERÍA + LIGHTBOX
      ============================================================ */
   const GALLERY_IMAGES = [
-    "1.jpg","2.jpg","3.jpg","4.jpg","5.jpg","6.jpg","7.jpg","8.jpg","9.jpg","10.jpg",
-    "11.jpg","12.jpg","13.jpg","14.jpg","15.jpg","16.jpg","17.jpg","18.jpg","19.jpg","20.jpg","21.jpg",
-    "DSC_7250.jpg","2-queso.png","3plat.png","pl55.png","plat4.png","plat7.png","plat8.png","plat9.png",
-    "plat10.png","plat11.png","plat12.png","plat13.png","plat15.png","plat17.png","plat18.png","plat19.png",
-    "platt6.png","plt3.png","FB_IMG_1689587975335.jpg","FB_IMG_1689587987842.jpg",
-    "Imagen de WhatsApp 2024-09-11 a las 13.24.06_aab569cf.jpg"
+    "1.webp","2.webp","3.webp","4.webp","5.webp","6.webp","7.webp","8.webp","9.webp","10.webp",
+    "11.webp","12.webp","13.webp","14.webp","15.webp","16.webp","17.webp","18.webp","19.webp","20.webp","21.webp",
+    "DSC_7250.webp","2-queso.webp","3plat.webp","pl55.webp","plat4.webp","plat7.webp","plat8.webp","plat9.webp",
+    "plat10.webp","plat11.webp","plat12.webp","plat13.webp","plat15.webp","plat17.webp","plat18.webp","plat19.webp",
+    "platt6.webp","plt3.webp","FB_IMG_1689587975335.webp","FB_IMG_1689587987842.webp",
+    "Imagen de WhatsApp 2024-09-11 a las 13.24.06_aab569cf.webp"
   ];
 
   const galleryList = [];
@@ -276,18 +276,18 @@ const CONFIG = {
      MOMENTOS DE TRADICIÓN (tira deslizable)
      ============================================================ */
   const MOMENTOS = [
-    { f: "momento-01.jpg", cap: "Nuestra fachada", alt: "Fachada y letrero de la picantería Tradiciones Arequipeñas" },
-    { f: "momento-02.jpg", cap: "Orquesta en vivo", alt: "Orquesta tocando en vivo en Tradiciones Arequipeñas" },
-    { f: "momento-03.jpg", cap: "Nuestro equipo", alt: "Equipo de atención de Tradiciones Arequipeñas" },
-    { f: "momento-04.jpg", cap: "La mesa compartida", alt: "Clientes compartiendo una comida en Tradiciones Arequipeñas" },
-    { f: "momento-05.jpg", cap: "Trío en vivo", alt: "Trío musical tocando en vivo en la picantería" },
-    { f: "momento-06.jpg", cap: "Voz de la casa", alt: "Cantante en el escenario de Tradiciones Arequipeñas" },
-    { f: "momento-07.jpg", cap: "Música criolla", alt: "Grupo de música criolla en el escenario" },
-    { f: "momento-08.jpg", cap: "Celebraciones en la mesa", alt: "Celebración de clientes alrededor de la mesa" },
-    { f: "momento-09.jpg", cap: "Show en vivo", alt: "Show musical en vivo en la picantería" },
-    { f: "momento-10.jpg", cap: "El tradicional de la casa", alt: "Escultura de la vasija tradicional arequipeña con el nombre del restaurante" },
-    { f: "momento-11.jpg", cap: "Con nuestros visitantes", alt: "Visitantes posando en Tradiciones Arequipeñas" },
-    { f: "momento-12.jpg", cap: "Altar de la Virgen", alt: "Altar con la imagen de la Virgen, flores y velas en Tradiciones Arequipeñas" }
+    { f: "momento-01.webp", cap: "Nuestra fachada", alt: "Fachada y letrero de la picantería Tradiciones Arequipeñas" },
+    { f: "momento-02.webp", cap: "Orquesta en vivo", alt: "Orquesta tocando en vivo en Tradiciones Arequipeñas" },
+    { f: "momento-03.webp", cap: "Nuestro equipo", alt: "Equipo de atención de Tradiciones Arequipeñas" },
+    { f: "momento-04.webp", cap: "La mesa compartida", alt: "Clientes compartiendo una comida en Tradiciones Arequipeñas" },
+    { f: "momento-05.webp", cap: "Trío en vivo", alt: "Trío musical tocando en vivo en la picantería" },
+    { f: "momento-06.webp", cap: "Voz de la casa", alt: "Cantante en el escenario de Tradiciones Arequipeñas" },
+    { f: "momento-07.webp", cap: "Música criolla", alt: "Grupo de música criolla en el escenario" },
+    { f: "momento-08.webp", cap: "Celebraciones en la mesa", alt: "Celebración de clientes alrededor de la mesa" },
+    { f: "momento-09.webp", cap: "Show en vivo", alt: "Show musical en vivo en la picantería" },
+    { f: "momento-10.webp", cap: "El tradicional de la casa", alt: "Escultura de la vasija tradicional arequipeña con el nombre del restaurante" },
+    { f: "momento-11.webp", cap: "Con nuestros visitantes", alt: "Visitantes posando en Tradiciones Arequipeñas" },
+    { f: "momento-12.webp", cap: "Altar de la Virgen", alt: "Altar con la imagen de la Virgen, flores y velas en Tradiciones Arequipeñas" }
   ];
 
   const strip = document.getElementById("momentos-strip");

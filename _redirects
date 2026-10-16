@@ -1,0 +1,5 @@
+# Rutas antiguas -> secciones de la web nueva
+/our-menu/     /#carta      301
+/our-menu      /#carta      301
+/nuestra-carta /#carta      301
+/menu/         /#carta      301

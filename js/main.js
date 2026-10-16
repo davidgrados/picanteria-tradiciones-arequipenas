@@ -123,7 +123,7 @@ const CONFIG = {
     GALLERY_IMAGES.forEach(function (name, i) {
       const fig = document.createElement("figure");
       const img = document.createElement("img");
-      img.src = "images/" + encodeURI(name);
+      img.src = "/images/" + encodeURI(name);
       img.alt = "Fotografía de la picantería Tradiciones Arequipeñas";
       img.loading = "lazy";
       img.dataset.index = i;
@@ -299,7 +299,7 @@ const CONFIG = {
       card.className = "momento";
       card.dataset.index = i;
       const img = document.createElement("img");
-      img.src = "images/momentos/" + m.f;
+      img.src = "/images/momentos/" + m.f;
       img.alt = m.alt;
       img.loading = "lazy";
       const cap = document.createElement("span");

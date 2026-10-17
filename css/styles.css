@@ -676,8 +676,13 @@ h3 { font-size: 1.55rem; }
 .mapa-placeholder[hidden] { display: none; }
 .mapa-placeholder p { color: var(--muted); font-size: 0.92rem; max-width: 34ch; }
 @media (max-width: 700px) {
-  .cookie-box { flex-direction: column; align-items: stretch; }
-  .cookie-actions .cookie-btn { flex: 1 1 auto; justify-content: center; }
+  /* Aviso de cookies: compacto en celular (antes ocupaba 62% de la pantalla) */
+  .cookie-banner { padding: 0.5rem; }
+  .cookie-box { flex-direction: column; align-items: stretch; gap: 0.55rem; padding: 0.8rem 0.9rem; border-radius: 14px; }
+  .cookie-text h3 { font-size: 0.98rem; margin-bottom: 0.15rem; }
+  .cookie-text p { font-size: 0.74rem; line-height: 1.38; }
+  .cookie-actions { gap: 0.4rem; }
+  .cookie-actions .cookie-btn { flex: 1 1 0; min-width: 0; justify-content: center; padding: 0.55rem 0.35rem; font-size: 0.78rem; }
   .footer-bottom { display: flex; flex-direction: column; gap: 0.5rem; }
   .cookie-link { margin-left: 0; }
 
@@ -707,7 +712,7 @@ h3 { font-size: 1.55rem; }
 }
 .carta-zoom-float:hover { background: #fff; transform: translateY(-1px); }
 
-body.cookie-banner-open { padding-bottom: 340px; }
+body.cookie-banner-open { padding-bottom: 200px; }
 @media (min-width: 700px) { body.cookie-banner-open { padding-bottom: 170px; } }
 
 /* ============================================================

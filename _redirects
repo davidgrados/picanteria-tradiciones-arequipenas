@@ -1,5 +1,7 @@
-# Rutas antiguas -> secciones de la web nueva
-/our-menu/     /#carta      301
-/our-menu      /#carta      301
-/nuestra-carta /#carta      301
-/menu/         /#carta      301
+# Rutas antiguas -> inicio de la web nueva (sin ancla, para no saltar a media pagina)
+/our-menu/       /   301
+/our-menu        /   301
+/nuestra-carta   /   301
+/menu/           /   301
+/carta/          /   301
+/contacto/       /   301

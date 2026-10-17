@@ -38,6 +38,20 @@ const CONFIG = {
     if (document.readyState === "complete") setTimeout(play, 200);
     else window.addEventListener("load", function () { setTimeout(play, 200); });
   })();
+  /* ---- Evita que el navegador restaure el scroll a media página ---- */
+  (function forceTopOnLoad() {
+    try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {}
+    try {
+      // Si llegamos desde un buscador con un ancla heredada (#carta), limpiamos y vamos arriba
+      if (location.hash && /google\.|bing\.|yahoo\.|duckduckgo\.|ecosia\./i.test(document.referrer || "")) {
+        history.replaceState(null, "", location.pathname + location.search);
+        window.scrollTo(0, 0);
+      }
+    } catch (e) {}
+    window.addEventListener("load", function () {
+      if (!location.hash) window.scrollTo(0, 0);
+    });
+  })();
   /* ---- Horario ---- */
   const horarioEl = document.getElementById("horario-text");
   if (horarioEl && CONFIG.HORARIO) horarioEl.textContent = CONFIG.HORARIO;

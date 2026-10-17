@@ -679,6 +679,7 @@ h3 { font-size: 1.55rem; }
   /* Aviso de cookies: compacto en celular (antes ocupaba 62% de la pantalla) */
   .cookie-banner { padding: 0.5rem; }
   .cookie-box { flex-direction: column; align-items: stretch; gap: 0.55rem; padding: 0.8rem 0.9rem; border-radius: 14px; }
+  .cookie-text { flex: 0 0 auto; }   /* evita 360px de alto en columna */
   .cookie-text h3 { font-size: 0.98rem; margin-bottom: 0.15rem; }
   .cookie-text p { font-size: 0.74rem; line-height: 1.38; }
   .cookie-actions { gap: 0.4rem; }
